@@ -61,7 +61,7 @@ class Usuario(AbstractBaseUser):
     
     USERNAME_FIELD= 'email' # cambia la forma de logeo por defecto 
     
-    #cmapos obligatorios, si es el correo de la empresa 
+    #cmapos obligatorios
     REQUIRED_FIELDS = ['username','first_name','last_name']
     
     #se instancia para ser utlizado en esta clase
@@ -79,3 +79,4 @@ class Usuario(AbstractBaseUser):
     
     def has_module_perms (self, add_label):
         return True
+# Create your models here.
