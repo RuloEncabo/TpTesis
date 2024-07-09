@@ -5,7 +5,7 @@ from .models import Usuario
 
 class Accontadmin(UserAdmin):
     #lo que muestra en la tabla de usuarios 
-    list_display = ('email','first_name','last_name', 'username','last_login','date_joined','is_active')
+    list_display = ('email','first_name','last_name', 'last_login','date_joined','is_active')
     # cuando seleciones una celda. da el detalle de una usuario 
     list_display_link = ('email','first_name','last_name')
     #campos de lectura
