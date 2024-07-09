@@ -46,9 +46,9 @@ class MyAccontManager(BaseUserManager):
 class Usuario(AbstractBaseUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    username= models.CharField(max_length=128, unique=True)
+    phone_number= models.CharField(max_length=128, unique=True)
     email= models.CharField(max_length=100, unique=True)
-    phone= models.CharField(max_length=50)
+    password= models.CharField(max_length=50)
     
     
 #campos atributos propio de Django 
