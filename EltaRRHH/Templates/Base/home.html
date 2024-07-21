@@ -30,7 +30,7 @@
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
 
-   <style>
+<style>
     #weatherWidget .currentDesc {
         color: #ffffff!important;
     }
@@ -55,7 +55,7 @@
             padding-bottom: 10px;
         }
         #flotLine5  {
-             height: 105px;
+            height: 105px;
         }
 
         #flotBarChart {
@@ -65,7 +65,14 @@
             height: 160px;
         }
 
-    </style>
+</style>
+<script type="text/javascript">  
+        $(document).ready(funtion() {      
+            setTimeout(function(){
+                $('#message').fadeOut('slow')        
+            },4000)
+        });
+</script>
 </head>
 
 <body>
@@ -90,7 +97,7 @@
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-map-o"></i>Registo Movimientos</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-table"></i><a href="tables-basic.html">Basic Table</a></li>
+                            <li><i class="fa fa-table"></i><a href="tables-basic.html">Dentro Directorio Base</a></li>
                             <li><i class="fa fa-table"></i><a href="tables-data.html">Data Table</a></li>
                         </ul>
                     </li>
