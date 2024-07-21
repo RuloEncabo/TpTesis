@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'usuarios',
     'chofer',
+    'movimientos',
+    'TipoKilometro'
 ]
 
 MIDDLEWARE = [
@@ -118,6 +120,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
+LOGIN_URL = 'login'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR /'static'
@@ -128,6 +131,20 @@ STATICFILES_DIRS = [
 # se agrega para ver la imagenes
 MEDIA_URL='/media/'
 MEDIA_ROOT = BASE_DIR /'media'
+
+#definir mensajes de error
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS ={
+    messages.ERROR : 'danger'    
+}
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'activacionelta@gmail.com'
+EMAIL_HOST_PASSWORD = 'objt ktfa gezu kkmk'
+EMAIL_USE_TLS = True
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
