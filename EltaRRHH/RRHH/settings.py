@@ -141,7 +141,7 @@ MESSAGE_TAGS ={
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'activacionelta@gmail.com'
-EMAIL_HOST_PASSWORD = 'objt ktfa gezu kkmk'
+EMAIL_HOST_PASSWORD = 'olzi ubxk ixyl altx'
 EMAIL_USE_TLS = True
 
 

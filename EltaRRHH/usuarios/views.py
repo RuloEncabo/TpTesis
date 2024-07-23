@@ -39,47 +39,76 @@ def chofer(request):
 def registro(request):
     form = RegistroForm()
     if request.method == 'POST':
-        form = RegistroForm(request.POST)
+        form = RegistroForm(request.POST, request.FILES)
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             phone_number = form.cleaned_data['phone_number']
             email = form.cleaned_data['email']
-            password= form.cleaned_data['password']
-            #marcelo@elta.com.ar
-            username= email.split("@")[0]
-            user = Usuario.objects.create_user(first_name=first_name,last_name=last_name,email=email, phone_number=phone_number,username=username,password=password )
-            user.phone_number = phone_number
-            #se insserta en la BD
-            user.save()
-            
-            #Activar al usuario
-            current_site = get_current_site(request)
-            mail_subject = 'por favor active su cuenta de ELTA'
-            body = render_to_string ('usuarios/usr_verificacion_mail.html',{
-                
-                'user':user,
-                'domain':current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':default_token_generator.make_token(user),
-                
-            })
-            to_email = email
-            send_email = EmailMessage(mail_subject,body,to=[to_email])
-            send_email.send()   
-            
-            
-            
-            #messages.success(request,'Se Registro el Usuario Exitosamente')
-            return redirect('/usuarios/login/?command=verification&email='+email) #redirecciona a la pag de login con el valor de lo parametros 
+            password = form.cleaned_data['password']
+            role = form.cleaned_data['role']
+            username = email.split("@")[0]
+            user = Usuario.objects.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                username=username,
+                email=email,
+                phone_number=phone_number,
+                password=password,
+                role=role  # Pasar el rol aquí
+            )
+            # Crear el objeto Chofer si el rol es 'chofer'
+            if role == 'chofer':
+                from .models import Chofer
+                Chofer.objects.create(
+                    # legajo=form.cleaned_data.get('legajo'),
+                    nombre=first_name,
+                    apellido=last_name,
+                    dni=form.cleaned_data.get('dni'),
+                    calle=form.cleaned_data.get('calle'),
+                    nrocalle=form.cleaned_data.get('nrocalle'),
+                    piso=form.cleaned_data.get('piso'),
+                    departamento=form.cleaned_data.get('departamento'),
+                    barrio=form.cleaned_data.get('barrio'),
+                    localidad=form.cleaned_data.get('localidad'),
+                    provincia=form.cleaned_data.get('provincia'),
+                    cp=form.cleaned_data.get('cp'),
+                    movil=phone_number,
+                    contactoemergencia=form.cleaned_data.get('contactoemergencia'),
+                    parentesco=form.cleaned_data.get('parentesco'),
+                    foto=form.cleaned_data.get('foto'),
+                    ingresoFCA_venc=form.cleaned_data.get('ingresoFCA_venc'),
+                    licencia_venc=form.cleaned_data.get('licencia_venc'),
+                    psicofisico_venc=form.cleaned_data.get('psicofisico_venc'),
+                    curso_venc=form.cleaned_data.get('curso_venc'),
+                    usuario=user  # Asociar el usuario al chofer
+                )
 
-    context={
-        
-        'form':form
-        
-    }
-    #envia el diccionario context que tiene la estructura del formulario creado 
-    return render(request, 'usuarios/registro.html',context)
+            # Enviar correo de activación
+            try:
+                current_site = get_current_site(request)
+                mail_subject = 'Por favor active su cuenta de ELTA'
+                body = render_to_string('usuarios/usr_verificacion_mail.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': default_token_generator.make_token(user),
+                })
+                to_email = email
+                send_email = EmailMessage(mail_subject, body, to=[to_email])
+                send_email.send()
+            except Exception as e:
+                # Registrar el error para depuración
+                print(f"Error al enviar el correo: {e}")
+                # O manejar el error de manera más adecuada
+                # Puedes usar logging para registrar el error en lugar de print
+                
+            return redirect('/usuarios/login/?command=verification&email=' + email)
+
+    else:
+        form = RegistroForm()
+    
+    return render(request, 'usuarios/registro.html', {'form': form})
 
 def login(request):
     #verifico que el metodo es post

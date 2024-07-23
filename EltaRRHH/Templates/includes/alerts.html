@@ -1,0 +1,13 @@
+{% if messages %}
+
+        <div id="message" class="container">
+            {% for message in messages %} 
+            <!-- Verifica si tiene mensaje -->
+                <div  {% if message.tags %}  class="alert alert-{{ message.tags }}"  {% endif %} role="alert">
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} Importortante: {% endif %}
+                        {{ message }}    
+                </div>
+            {% endfor %}
+        </div>
+        
+{% endif %}

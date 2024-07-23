@@ -1,82 +1,104 @@
+from datetime import date
 from django.db import models
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager    
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.apps import apps
 
-# Create your models here.
-
-#clase para generar usuarios
-class MyAccontManager(BaseUserManager):
-    #funcion que permite crear un nuevo usuario 
-    def create_user(self,first_name,last_name, email, username,password=None):
-        #muestra error si el usuario no tiene email
+class MyAccountManager(BaseUserManager):
+    def create_user(self, first_name, last_name, username, email, phone_number, password=None, role=None):
         if not email:
-            raise ValueError('el usuario debe tener un email')
+            raise ValueError('Ingrese Correo Electrónico')
         if not username:
-            raise ValueError('el usuario debe tener un username')
-        
-        user= self.model(
-            
-            email=self.normalize_email(email),
-            username=username,  
-            first_name =first_name,
-            last_name=last_name
-            
-        )
-        user.set_password(password)
-    #se llama para guardar la transaccion en la bd
-        user.save(using=self._db)
-        return user
+            raise ValueError('Ingrese Nombre de Usuario')
 
-    #funcion que permite crear super usuario
-    def  create_superuser(self,first_name,last_name,username,email,password):
-        user =self.create_user (            
+        user = self.model(
             email=self.normalize_email(email),
             username=username,
-            password=password,
             first_name=first_name,
-            last_name=last_name            
+            last_name=last_name,
+            phone_number=phone_number,
+        )
+
+        user.set_password(password)
+        user.role = role  # Establecer el rol del usuario
+        user.save(using=self._db)
+
+        # Obtener el modelo Chofer y crear una instancia
+        if role == 'chofer':
+        # Obtener el modelo Chofer y crear una instancia solo si el rol es 'chofer'
+            Chofer = apps.get_model('chofer','chofer')  # Cambia 'movimientos' por el nombre de tu app
+
+            chofer = Chofer(
+                #legajo="12345",  # Puedes modificar esto o hacer que sea automático
+                nombre=first_name,
+                apellido=last_name,
+                dni="00000000",  # Modificar según tus necesidades
+                calle="Calle Ejemplo",
+                nrocalle="123",
+                piso="1",
+                departamento="A",
+                barrio="Barrio Ejemplo",
+                localidad="Localidad Ejemplo",
+                provincia="Provincia Ejemplo",
+                cp="1234",
+                movil=phone_number,
+                contactoemergencia="Contacto Ejemplo",
+                parentesco="Parentesco Ejemplo",
+                foto=None,
+                ingresoFCA_venc=date(2025, 1, 1),
+                licencia_venc=date(2025, 1, 1),
+                psicofisico_venc=date(2025, 1, 1),
+                curso_venc=date(2025, 1, 1),
+                usuario=user  # Asociar el usuario al chofer
+            )
+            chofer.save(using=self._db)
+
+    def create_superuser(self, first_name, last_name, username, email, phone_number, password=None):
+        user = self.create_user(
+            email=email,
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            password=password,
         )
         user.is_admin = True
-        user.is_active=True
+        user.is_active = True
         user.is_staff = True
         user.is_superadmin = True
         user.save(using=self._db)
         return user
 
 class Usuario(AbstractBaseUser):
+    ROLES = (
+        ('admin', 'Administrador'),
+        ('chofer', 'Chofer'),
+    )
+
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    phone_number= models.CharField(max_length=128, unique=True)
-    email= models.CharField(max_length=100, unique=True)
-    password= models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=128, default='123456789')
+    email = models.CharField(max_length=100, unique=True)
+    username = models.CharField(max_length=50, unique=True, default='default_username')
+    password = models.CharField(max_length=120)
+    role = models.CharField(max_length=10, choices=ROLES, default='chofer')
     
-    
-#campos atributos propio de Django 
-    date_joined= models.DateTimeField(auto_now_add=True)
-    last_login= models.DateTimeField(auto_now=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)
     
-    USERNAME_FIELD= 'email' # cambia la forma de logeo por defecto 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'phone_number']
     
-    #cmapos obligatorios
-    REQUIRED_FIELDS = ['username','first_name','last_name']
-    
-    #se instancia para ser utlizado en esta clase
-    objects = MyAccontManager()
-    
-    
+    objects = MyAccountManager()
+
     def __str__(self):
         return self.email
     
-    #funcion de permisos
-    def has_perm(self, perm,obj=None):
-        return self.is_admin #solo si es administrado puede modificar 
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
     
-    #funcion de modulos
-    
-    def has_module_perms (self, add_label):
+    def has_module_perms(self, add_label):
         return True
-# Create your models here.

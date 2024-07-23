@@ -66,62 +66,119 @@
   <!-- ============================ COMPONENT REGISTER   ================================= -->
   <div class="card mx-auto" style="max-width: 520px; margin-top: 40px">
     <article class="card-body">
-      <header class="mb-4"><h4 class="card-title">Registro usuario</h4></header>
-      <form action="{% url 'registro' %}" method="POST">  <!--envia los datos obtenidos por el metodo POST -->
-          {% csrf_token %} <!--con este comando se envian los datos -->
 
-          <!--  {{ form.as_p }}  imprimir lo que devuelve el formulario -->
+      {% include 'includes/alerts.html' %}
 
-          <!-- Bloque Nombre y Apellido -->
-        <div class="form-row"><!-- dos filas con 1 control cada una de las filas> -->
-          <div class="col form-group">
-            <label>Nombre</label>
-            {{ form.first_name }}
-          </div>
-          <!-- form-group end.// -->
-          <div class="col form-group">
-            <label>Apellido</label>
-            {{ form.last_name }}
-          </div>
-          <!-- form-group end.// -->
-        </div>
+      <header class="mb-4"><h2 class="card-title">Registro </h2></header>
+      <form action="{% url 'registro' %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
 
-          <!-- Bloque Email y Numero celular -->
-        <div class="form-row"><!-- dos filas con 1 control cada una de las filas> -->
-          <div class="col form-group">
-            <label>Numero Celular</label>
-            {{ form.phone_number }}
-          </div>
-          <!-- form-group end.// -->
-    
-          <div class="col form-group">
-            <label>Correo Electronico</label>
-            {{ form.email }}
-          </div>
-          <!-- form-group end.// -->
-        </div>
-        
-        <!-- Bloque contraseña -->
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label>Crear Contraseña</label>
-              {{ form.password }}
-          </div>
-          <!-- form-group end.// -->
-          <div class="form-group col-md-6">
-            <label>Repetir Contraseña</label>
-            {{ form.confirm_password }}
-          </div>
-          <!-- form-group end.// -->
-        </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block">
-                Registrar
-                </button>
+          {{ form.as_p }}
+
+          <div id="chofer-fields" style="display: none;">
+            <!-- Bloque Datos Personales -->
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Legajo</label>
+                {{ form.legajo }}
+              </div>
             </div>
-                <!-- form-group// -->
-        </form>
+
+            <div class="form-row">
+              <div class="col form-group">
+                <label>DNI</label>
+                {{ form.dni }}
+              </div>
+            </div>
+
+            <!-- Bloque Direccion -->
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Calle</label>
+                {{ form.calle }}
+              </div>
+              <div class="col form-group">
+                <label>Número de Calle</label>
+                {{ form.nrocalle }}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Piso</label>
+                {{ form.piso }}
+              </div>
+              <div class="col form-group">
+                <label>Departamento</label>
+                {{ form.departamento }}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Barrio</label>
+                {{ form.barrio }}
+              </div>
+              <div class="col form-group">
+                <label>Localidad</label>
+                {{ form.localidad }}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Provincia</label>
+                {{ form.provincia }}
+              </div>
+              <div class="col form-group">
+                <label>Código Postal</label>
+                {{ form.cp }}
+              </div>
+            </div>
+
+            <!-- Bloque Contacto -->
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Contacto de Emergencia</label>
+                {{ form.contactoemergencia }}
+              </div>
+              <div class="col form-group">
+                <label>Parentesco</label>
+                {{ form.parentesco }}
+              </div>
+            </div>
+
+            <!-- Bloque Documentos -->
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Ingreso FCA Vencimiento</label>
+                {{ form.ingresoFCA_venc }}
+              </div>
+              <div class="col form-group">
+                <label>Licencia Vencimiento</label>
+                {{ form.licencia_venc }}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Psicofísico Vencimiento</label>
+                {{ form.psicofisico_venc }}
+              </div>
+              <div class="col form-group">
+                <label>Curso Vencimiento</label>
+                {{ form.curso_venc }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+          </div>
+          {{ form.non_field_errors }}
+      </form>
     </article>
+  </div>
     <!-- card-body.// -->
         </div>
     <!-- card .// -->
