@@ -122,6 +122,7 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
+            #messages.successs (request, " Has iniciado la sesion exitosamente")
             if user.role == 'admin':
                 return redirect('home')
             elif user.role == 'chofer':
