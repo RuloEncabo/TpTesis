@@ -1,5 +1,5 @@
 from django.urls import path
-from. import views
+from . import views
 
 urlpatterns = [
     
@@ -10,6 +10,7 @@ urlpatterns = [
     path('listar/', views.listar, name='listar'),
     #path('admin/', views.home, name='admin'),
     path('chofer/', views.chofer, name='chofer'),
+    path('listusuario/', views.listusuario, name='listusuario'),
     path('', views.home, name='home'),
     path('activate/<uidb64>/<token>', views.activate, name='activate'), # ruta para la funcion activate con los parametros  
     
