@@ -9,7 +9,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
-# Create your views here.
 
 
 @login_required(login_url='login')
@@ -33,8 +32,6 @@ def admin(request):
 @user_passes_test(is_chofer)
 def chofer(request):
     return render(request, 'hchofer.html')
-
-
 
 def registro(request):
     form = RegistroForm()
@@ -110,6 +107,7 @@ def registro(request):
     
     return render(request, 'usuarios/registro.html', {'form': form})
 
+#####
 def login(request):
     #verifico que el metodo es post
     if request.method == 'POST':
@@ -136,7 +134,7 @@ def login(request):
     
     return render(request, 'usuarios/login.html')
 
-
+#####
 @login_required(login_url='login')
 def logout(request):
     
@@ -162,8 +160,15 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Tu Usuario NO se Activó !!!')
         return redirect('registro')
-
-    
+####    
 @login_required(login_url='login')
 def listar(request):
     return render (request, 'usuarios/listar.html')
+
+####
+def listusuario(request):
+    usuarios = Usuario.objects.all().order_by('-date_joined')
+    context = {
+        'usuarios': usuarios,
+    }
+    return render(request, 'usuarios/listusuario.html', context)
