@@ -4,9 +4,8 @@ from django.conf import settings
 
 from django.db import models
 
-
-
 class Movimiento(models.Model):
+    
     mov_id = models.AutoField(primary_key=True)
     chofer = models.ForeignKey('chofer.Chofer', on_delete=models.CASCADE)
     nFlota = models.CharField(max_length=60, null=True, blank=True)
@@ -16,7 +15,7 @@ class Movimiento(models.Model):
     kmFin = models.IntegerField(null=True, blank=True)
     lugar_inicio = models.CharField(max_length=60)
     lugar_fin = models.CharField(max_length=60, null=True, blank=True)
-    tipo_kilometro = models.ForeignKey(TipoKilometro, on_delete=models.CASCADE, related_name='movimiento', null=True, blank=True)
+   # tipo_kilometro = models.ForeignKey(TipoKilometro, on_delete=models.CASCADE)
     lleva_carga = models.BooleanField(default=False)
     permanencia = models.BooleanField(default=False)
     diasPermanencia = models.IntegerField(default=0)
