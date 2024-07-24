@@ -1,13 +1,10 @@
-
 from datetime import date
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
+from django.contrib.auth.models import AbstractUser
 from RRHH import settings
 
 class Chofer(models.Model):
-    Id_chofer= models.AutoField(primary_key=True)
-    #legajo = models.CharField(max_length=100,null=True, blank=True)
+    Id_chofer = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, null=True)
     apellido = models.CharField(max_length=100)
     dni = models.CharField(max_length=8)
@@ -27,8 +24,8 @@ class Chofer(models.Model):
     licencia_venc = models.DateField()
     psicofisico_venc = models.DateField()
     curso_venc = models.DateField()
+    
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
     is_staff = models.BooleanField(default=False)
