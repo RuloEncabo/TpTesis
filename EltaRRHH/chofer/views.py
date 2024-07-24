@@ -1,11 +1,19 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from .forms import RegistroForm, ChoferForm
-from .models import Usuario, Chofer
+from .forms import ChoferForm
+from .models import Chofer
 
+####
+def listchofer(request):
+    choferes = Chofer.objects.all().order_by('-date_joined')
+    context = {
+        'choferes': choferes,
+    }
+    return render(request, 'chofer/listchofer.html', context)
+
+"""
 def registro_chofer(request):
     if request.method == 'POST':
-        form = RegistroForm(request.POST)
+        form = ChoferForm(request.POST)
         chofer_form = ChoferForm(request.POST, request.FILES)
         if form.is_valid() and chofer_form.is_valid():
             email = form.cleaned_data['email']
@@ -42,7 +50,7 @@ def registro_chofer(request):
                 return redirect('success_page')  # Cambia 'success_page' por la URL adecuada
 
     else:
-        form = RegistroForm()
+        form = ChoferForm()
         chofer_form = ChoferForm()
 
     context = {
@@ -58,3 +66,4 @@ def registro_chofer(request):
             context['user_exists'] = True
 
     return render(request, 'chofer/regChoferistro.html', context)
+"""
