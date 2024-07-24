@@ -23,8 +23,10 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-   # path('', views.home, name="home"),
+    #path('', views.home, name="home"),
     path('usuarios/', include('usuarios.urls')),
     path('', lambda request: redirect('login')),
+    path('chofer/', include('chofer.urls')),
+    path('movimientos/', include('movimientos.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
