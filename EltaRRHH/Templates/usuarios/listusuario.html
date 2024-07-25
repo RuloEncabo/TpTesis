@@ -46,7 +46,6 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col" class="text-sm">Nombre</th>
-                                                <th scope="col" class="text-sm">Apellido</th>
                                                 <th scope="col" class="text-sm">E-Mail</th>
                                                 <th scope="col" class="text-sm">Perfil</th>
                                                 
@@ -55,8 +54,7 @@
                                         <tbody>
                                             {% for usuario in usuarios %}
                                             <tr>
-                                                <td class="text-center text-dark text-sm">{{ usuario.first_name }}</td>
-                                                <td class="text-sm">{{ usuario.last_name }}</td>
+                                                <td class="text-dark text-sm">{{ usuario.full_name}}</td>
                                                 <td class="text-sm">{{ usuario.email }}</td>
                                                 <td class="text-sm">{{ usuario.role }}</td>
                                             
