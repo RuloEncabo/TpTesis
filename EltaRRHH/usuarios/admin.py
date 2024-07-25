@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Usuario
+from .models import Usuario, UsuarioChofer
+from django.utils.html import format_html
 
 
 class Accontadmin(UserAdmin):
@@ -19,5 +20,15 @@ class Accontadmin(UserAdmin):
     fieldsets=()
 
 
+class UsuarioChoferAdmin(admin.ModelAdmin):
+    #control que permita adinistrar mis imagenes
+    def thumbnail(self, object):
+        return format_html('<img src="{}" width="30" style="border-radius:50%;" >'.format(object.foto.url))
+    
+    thumbnail.short_description = 'Imagen de Perfil'
+    list_display =('thumbnail' , 'usuario', 'dni', 'direccion', 'localidad', 'provincia', 'ingresoFCA_venc', 'licencia_venc','psicofisico_venc', 'curso_venc')
+    
+    
 # Register your models here.
 admin.site.register(Usuario, Accontadmin)
+admin.site.register(UsuarioChofer, UsuarioChoferAdmin)
