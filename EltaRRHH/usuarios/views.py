@@ -1,6 +1,8 @@
+import email
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from .forms import RegistroForm
-from .models import Usuario
+from .models import Usuario, UsuarioChofer
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib.sites.shortcuts import get_current_site
@@ -33,81 +35,54 @@ def admin(request):
 def chofer(request):
     return render(request, 'hchofer.html')
 
+### Funcion para Registrar usuario o UsuarioChofer ###
 def registro(request):
-    form = RegistroForm()
     if request.method == 'POST':
         form = RegistroForm(request.POST, request.FILES)
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            phone_number = form.cleaned_data['phone_number']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            role = form.cleaned_data['role']
-            username = email.split("@")[0]
-            user = Usuario.objects.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                username=username,
-                email=email,
-                phone_number=phone_number,
-                password=password,
-                role=role  # Pasar el rol aquí
-            )
-            # Crear el objeto Chofer si el rol es 'chofer'
-            if role == 'chofer':
-                from .models import Chofer
-                Chofer.objects.create(
-                    # legajo=form.cleaned_data.get('legajo'),
-                    nombre=first_name,
-                    apellido=last_name,
-                    dni=form.cleaned_data.get('dni'),
-                    calle=form.cleaned_data.get('calle'),
-                    nrocalle=form.cleaned_data.get('nrocalle'),
-                    piso=form.cleaned_data.get('piso'),
-                    departamento=form.cleaned_data.get('departamento'),
-                    barrio=form.cleaned_data.get('barrio'),
-                    localidad=form.cleaned_data.get('localidad'),
-                    provincia=form.cleaned_data.get('provincia'),
-                    cp=form.cleaned_data.get('cp'),
-                    movil=phone_number,
-                    contactoemergencia=form.cleaned_data.get('contactoemergencia'),
-                    parentesco=form.cleaned_data.get('parentesco'),
-                    foto=form.cleaned_data.get('foto'),
-                    ingresoFCA_venc=form.cleaned_data.get('ingresoFCA_venc'),
-                    licencia_venc=form.cleaned_data.get('licencia_venc'),
-                    psicofisico_venc=form.cleaned_data.get('psicofisico_venc'),
-                    curso_venc=form.cleaned_data.get('curso_venc'),
-                    usuario=user  # Asociar el usuario al chofer
-                )
-
-            # Enviar correo de activación
             try:
-                current_site = get_current_site(request)
-                mail_subject = 'Por favor active su cuenta de ELTA'
-                body = render_to_string('usuarios/usr_verificacion_mail.html', {
-                    'user': user,
-                    'domain': current_site.domain,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': default_token_generator.make_token(user),
-                })
-                to_email = email
-                send_email = EmailMessage(mail_subject, body, to=[to_email])
-                send_email.send()
-            except Exception as e:
-                # Registrar el error para depuración
-                print(f"Error al enviar el correo: {e}")
-                # O manejar el error de manera más adecuada
-                # Puedes usar logging para registrar el error en lugar de print
+                email = form.cleaned_data['email']
+                # Crear el usuario
+                user = Usuario.objects.create_user(
+                    first_name=form.cleaned_data['first_name'],
+                    last_name=form.cleaned_data['last_name'],
+                    phone_number=form.cleaned_data['phone_number'],
+                    email=email,
+                    password=form.cleaned_data['password'],
+                    role=form.cleaned_data['role'],
+                    username = email.split("@")[0]
+                )
                 
-            return redirect('/usuarios/login/?command=verification&email=' + email)
-
+                # Si el rol es chofer, crear instancia de UsuarioChofer
+                if form.cleaned_data['role'] == 'chofer':
+                    UsuarioChofer.objects.create(
+                        usuario=user,
+                        dni=form.cleaned_data['dni'],
+                        calle=form.cleaned_data['calle'],
+                        nrocalle=form.cleaned_data['nrocalle'],
+                        piso=form.cleaned_data['piso'],
+                        departamento=form.cleaned_data['departamento'],
+                        barrio=form.cleaned_data['barrio'],
+                        localidad=form.cleaned_data['localidad'],
+                        provincia=form.cleaned_data['provincia'],
+                        cp=form.cleaned_data['cp'],
+                        contactoemergencia=form.cleaned_data['contactoemergencia'],
+                        parentesco=form.cleaned_data['parentesco'],
+                        foto=form.cleaned_data['foto'],
+                        ingresoFCA_venc=form.cleaned_data['ingresoFCA_venc'],
+                        licencia_venc=form.cleaned_data['licencia_venc'],
+                        psicofisico_venc=form.cleaned_data['psicofisico_venc'],
+                        curso_venc=form.cleaned_data['curso_venc']
+                    )
+                
+                return redirect('login')  # Redirigir al login o a donde desees
+            except IntegrityError as e:
+                form.add_error(None, "Error al crear el usuario. Por favor, intente nuevamente.")
     else:
         form = RegistroForm()
     
     return render(request, 'usuarios/registro.html', {'form': form})
-
-#####
+### Funcion para Login ###
 def login(request):
     #verifico que el metodo es post
     if request.method == 'POST':
@@ -172,3 +147,11 @@ def listusuario(request):
         'usuarios': usuarios,
     }
     return render(request, 'usuarios/listusuario.html', context)
+
+### Lista los campos del Chofer ###
+def listusuariochofer(request):
+    usuarioschofer = UsuarioChofer.objects.all()
+    context = {
+        'usuarioschofer': usuarioschofer,
+    }
+    return render(request, 'usuarios/listusuariochofer.html', context)
