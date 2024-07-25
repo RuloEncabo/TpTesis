@@ -22,15 +22,11 @@ class MyAccountManager(BaseUserManager):
         user.role = role  # Establecer el rol del usuario
         user.save(using=self._db)
 
-        # Obtener el modelo Chofer y crear una instancia
+        # Crear una instancia de UsuarioChofer solo si el rol es 'chofer'
         if role == 'chofer':
-        # Obtener el modelo Chofer y crear una instancia solo si el rol es 'chofer'
-            Chofer = apps.get_model('chofer','chofer')  # Cambia 'movimientos' por el nombre de tu app
-
-            chofer = Chofer(
-                #legajo="12345",  # Puedes modificar esto o hacer que sea automático
-                nombre=first_name,
-                apellido=last_name,
+            UsuarioChofer = apps.get_model('usuarios', 'UsuarioChofer')
+            UsuarioChofer.objects.create(
+                usuario=user,  # Asociar el usuario al chofer
                 dni="00000000",  # Modificar según tus necesidades
                 calle="Calle Ejemplo",
                 nrocalle="123",
@@ -40,17 +36,17 @@ class MyAccountManager(BaseUserManager):
                 localidad="Localidad Ejemplo",
                 provincia="Provincia Ejemplo",
                 cp="1234",
-                movil=phone_number,
+                #movil=phone_number,
                 contactoemergencia="Contacto Ejemplo",
                 parentesco="Parentesco Ejemplo",
                 foto=None,
                 ingresoFCA_venc=date(2025, 1, 1),
                 licencia_venc=date(2025, 1, 1),
                 psicofisico_venc=date(2025, 1, 1),
-                curso_venc=date(2025, 1, 1),
-                usuario=user  # Asociar el usuario al chofer
+                curso_venc=date(2025, 1, 1)
             )
-            chofer.save(using=self._db)
+
+        return user
 
     def create_superuser(self, first_name, last_name, username, email, phone_number, password=None):
         user = self.create_user(
@@ -102,3 +98,32 @@ class Usuario(AbstractBaseUser):
     
     def has_module_perms(self, add_label):
         return True
+    #devuelve nombre y apelllido
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+    
+    
+class UsuarioChofer(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    dni = models.CharField(max_length=10)
+    calle = models.CharField(max_length=100)
+    nrocalle = models.CharField(max_length=10)
+    piso = models.CharField(max_length=10, blank=True, null=True)
+    departamento = models.CharField(max_length=10, blank=True, null=True)
+    barrio = models.CharField(max_length=100, blank=True, null=True)
+    localidad = models.CharField(max_length=100)
+    provincia = models.CharField(max_length=100)
+    cp = models.CharField(max_length=10)
+    contactoemergencia = models.CharField(max_length=100)
+    parentesco = models.CharField(max_length=100)
+    foto = models.ImageField(upload_to='choferes/fotos/', blank=True, null=True)
+    ingresoFCA_venc = models.DateField()
+    licencia_venc = models.DateField()
+    psicofisico_venc = models.DateField()
+    curso_venc = models.DateField()
+    
+    def __str__(self):
+        return self.usuario.first_name
+    
+    def direccion(self):
+        return f'{self.calle}{self.nrocalle} {self.piso}'
