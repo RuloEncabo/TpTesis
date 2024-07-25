@@ -3,7 +3,7 @@
     <ul class="list-group">
         <a class="list-group-item {% if '/usuarios/' == request.path %} active {% endif %}" href="{% url 'listar' %}"> Dashboard Usuarios </a>
         <a class="list-group-item {% if '/listusuario/' in request.path %} active {% endif %}"href="{% url 'listusuario' %}">Usuarios Activos </a>
-        <a class="list-group-item" href="#">Editar Perfil </a>
+        <a class="list-group-item {% if '/listusuariochofer/' in request.path %} active {% endif %}"href="{% url 'listusuariochofer' %}">Choferes Activos  </a>
         <a class="list-group-item" href="#">Cambiar Contraseña </a>
     </ul>
     <br>
