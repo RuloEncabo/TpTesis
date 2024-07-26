@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'usuarios',
     'chofer',
     'movimientos',
-    'TipoKilometro'
+    'TipoKilometro',
+    'Viaje',
 ]
 
 MIDDLEWARE = [
