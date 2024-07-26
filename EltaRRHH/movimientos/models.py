@@ -1,14 +1,22 @@
 from datetime import date
-#from .models import UsuarioChofer, TipoKilometro 
+#from . models import UsuarioChofer,Usuario, TipoKilometro 
 from django.db import models
 from django.conf import settings
 from django.db import models
 from django.forms import ValidationError
 
-class Movimiento(models.Model):
+
+class TipoKilometros(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField()
+
+    def __str__(self):
+        return self.nombre
+
+
+class Movimientos(models.Model):
     mov_id = models.AutoField(primary_key=True)
     chofer = models.OneToOneField('usuarios.UsuarioChofer', on_delete=models.CASCADE)
-    #viaje = models.ForeignKey(Viaje, on_delete=models.CASCADE)
     nFlota = models.CharField(max_length=60, null=True, blank=True)
     inicio = models.DateTimeField()
     fin = models.DateTimeField(null=True, blank=True)
@@ -16,7 +24,7 @@ class Movimiento(models.Model):
     kmFin = models.IntegerField(null=True, blank=True)
     lugar_inicio = models.CharField(max_length=60)
     lugar_fin = models.CharField(max_length=60, null=True, blank=True)
-    tipo_kilometro = models.ForeignKey('TipoKilometro', on_delete=models.CASCADE)
+    tipo_kilometro = models.ForeignKey('TipoKilometro.TipoKilometro', on_delete=models.CASCADE)
     lleva_carga = models.BooleanField(default=False)
     permanencia = models.BooleanField(default=False)
     diasPermanencia = models.IntegerField(default=0)
@@ -35,11 +43,11 @@ class Movimiento(models.Model):
 
         # Verificar si el chofer tiene un movimiento sin cerrar
         if not self.fin:
-            if Movimiento.objects.filter(chofer=self.chofer, fin__isnull=True).exclude(pk=self.pk).exists():
+            if Movimientos.objects.filter(chofer=self.chofer, fin__isnull=True).exclude(pk=self.pk).exists():
                 raise ValidationError('El chofer tiene un movimiento sin cerrar.')
 
         # Verificar que lugar_inicio no se pueda modificar si hay un movimiento sin cerrar
-        ultimo_movimiento = Movimiento.objects.filter(chofer=self.chofer).order_by('-inicio').first()
+        ultimo_movimiento = Movimientos.objects.filter(chofer=self.chofer).order_by('-inicio').first()
         if ultimo_movimiento and not ultimo_movimiento.fin and self.lugar_inicio != ultimo_movimiento.lugar_inicio:
             raise ValidationError('No se puede modificar el campo lugar_inicio mientras haya un movimiento sin cerrar.')
     
