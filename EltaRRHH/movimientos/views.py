@@ -2,23 +2,23 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario, UsuarioChofer
-from models import Movimiento
+from . models import Movimientos
 from django.urls import reverse_lazy
-from .forms import MovimientoForm
+from .forms import MovimientosForm
 
 
 
 
 @login_required
-def registrar_movimiento(request):
+def registrarmovimiento(request):
     if request.method == 'POST':
-        form = MovimientoForm(request.POST)
+        form = MovimientosForm(request.POST)
         if form.is_valid():
             usuario = request.user
             if usuario.role == 'chofer':
                 try:
                     usuario_chofer = UsuarioChofer.objects.get(usuario=usuario)
-                    Movimiento.objects.create(
+                    Movimientos.objects.create(
                         usuario=usuario,
                         usuario_chofer=usuario_chofer,
                         nFlota=form.cleaned_data['nFlota'],
@@ -40,30 +40,30 @@ def registrar_movimiento(request):
             else:
                 form.add_error(None, "El usuario no tiene el rol de chofer.")
     else:
-        form = MovimientoForm()
+        form = MovimientosForm()
     
     return render(request, 'movimientos/registrar_movimiento.html', {'form': form})
 
 
 
 class MovimientoCreateView(CreateView):
-    model = Movimiento
+    model = Movimientos
     fields = '__all__'  # Puedes especificar los campos explícitamente
     template_name = 'movimiento_form.html'
     success_url = reverse_lazy('movimiento-list')
 
 class MovimientoListView(ListView):
-    model = Movimiento
+    model = Movimientos
     template_name = 'movimiento_list.html'
 
 class MovimientoUpdateView(UpdateView):
-    model = Movimiento
+    model = Movimientos
     fields = '__all__'  # Puedes especificar los campos explícitamente
     template_name = 'movimiento_form.html'
     success_url = reverse_lazy('movimiento-list')
 
 class MovimientoDeleteView(DeleteView):
-    model = Movimiento
+    model = Movimientos
     template_name = 'movimiento_confirm_delete.html'
     success_url = reverse_lazy('movimiento-list')
     
