@@ -30,51 +30,7 @@
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
 
-<style>
-    #weatherWidget .currentDesc {
-        color: #ffffff!important;
-    }
-        .traffic-chart {
-            min-height: 335px;
-        }
-        #flotPie1  {
-            height: 150px;
-        }
-        #flotPie1 td {
-            padding:3px;
-        }
-        #flotPie1 table {
-            top: 20px!important;
-            right: -10px!important;
-        }
-        .chart-container {
-            display: table;
-            min-width: 270px ;
-            text-align: left;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-        #flotLine5  {
-            height: 105px;
-        }
 
-        #flotBarChart {
-            height: 150px;
-        }
-        #cellPaiChart{
-            height: 160px;
-        }
-
-    </style>
-
-<script type="text/javascript">  
-
-    $(document).ready(funtion() {      
-        setTimeout(function(){
-            $('#message').fadeOut('slow')        
-        },4000)
-    });
-</script>
 
 </head>
 <body>
@@ -84,9 +40,9 @@
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="active">
-                        <a href="home.html"><i class="menu-icon fa fa-truck"></i>Recursos Hurmanos </a>
+                        <a href="#"><i class="menu-icon fa fa-truck"></i> RRHH ELTA </a>
                         </li>
-                        <li class="menu-title">Administacion RRHH</li><!-- /.menu-title -->
+                        <li class="menu-title">Menu Chofer</li><!-- /.menu-title -->
                     
                             <li class="menu-item-has-children dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i> Usuarios </a>
@@ -95,7 +51,7 @@
                                 <li><i class="fa fa-users"></i><a href="{%  url 'login'  %}"> Login</a></li>
                 </ul>
                     <li>
-                        <a href="widgets.html"> <i class="menu-icon ti-email"></i>Movimientos </a>
+                        <a href="{% url 'registrarmovimiento' %}"> <i class="menu-icon fa fa-exchange"></i>Movimientos </a>
                     </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -171,10 +127,10 @@
             <div class="footer-inner bg-white">
                 <div class="row">
                     <div class="col-sm-6">
-                        Copyright &copy; 2024 Marcelo Encabo
+                        Copyright &copy; 2024 Marcelo Encabo & Juan Pablo Arguello
                     </div>
                     <div class="col-sm-6 text-right">
-                        Designed by <a href="https://colorlib.com">MarceloCabo</a>
+                        Designed by <a href="https://colorlib.com">ELTA Transpotes</a>
                     </div>
                 </div>
             </div>
@@ -184,6 +140,14 @@
     <!-- /#right-panel -->
 
     <!-- Scripts -->
+    <script type="text/javascript">  
+
+        $(document).ready(funtion() {      
+            setTimeout(function(){
+                $('#message').fadeOut('slow')        
+            },4000)
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
