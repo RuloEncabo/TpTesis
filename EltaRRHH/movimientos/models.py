@@ -4,7 +4,8 @@ from django.db import models
 from django.conf import settings
 from django.db import models
 from django.forms import ValidationError
-
+from usuarios.models import Usuario
+from usuarios.models import UsuarioChofer
 
 class TipoKilometros(models.Model):
     nombre = models.CharField(max_length=100)
@@ -13,10 +14,10 @@ class TipoKilometros(models.Model):
     def __str__(self):
         return self.nombre
 
-
 class Movimientos(models.Model):
     mov_id = models.AutoField(primary_key=True)
-    chofer = models.OneToOneField('usuarios.UsuarioChofer', on_delete=models.CASCADE)
+    usuario_id = models.ForeignKey(Usuario, on_delete=models.CASCADE)  # Asegúrate de que esta línea esté activa
+    chofer= models.ForeignKey(UsuarioChofer, null=True, blank=True, on_delete=models.SET_NULL)
     nFlota = models.CharField(max_length=60, null=True, blank=True)
     inicio = models.DateTimeField()
     fin = models.DateTimeField(null=True, blank=True)
@@ -32,10 +33,13 @@ class Movimientos(models.Model):
     active = models.BooleanField(default=True)
     modif = models.DateTimeField(auto_now=True)
     comentarios = models.CharField(max_length=250, null=True, blank=True)
-
-    def __str__(self):
-        return str(self.mov_id)
+    created_at = models.DateTimeField(auto_now_add=True)  # Fecha y hora de creación
+    updated_at = models.DateTimeField(auto_now=True)  # Fecha y hora de la última actualización
     
+    def __str__(self):
+        return f"Movimiento {self.mov_id} - {self.chofer}"
+    
+
     def clean(self):
         # Verificar que kmFin sea mayor que kmInicio
         if self.kmFin is not None and self.kmFin < self.kmInicio:
