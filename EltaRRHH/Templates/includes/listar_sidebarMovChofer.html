@@ -1,0 +1,12 @@
+<aside class="col-md-3">
+    <!--   SIDEBAR   -->
+    <ul class="list-group">
+        <a class="list-group-item {% if '/movimientos/' == request.path %} active {% endif %}" href="{% url 'registrarmovimiento' %}"> Movimientos </a>
+        <a class="list-group-item {% if '/listusuario/' in request.path %} active {% endif %}"href="{% url 'listusuario' %}">Registar Moviemientos </a>
+        <a class="list-group-item {% if '/listusuariochofer/' in request.path %} active {% endif %}"href="{% url 'listusuariochofer' %}">Choferes Activos  </a>
+        <a class="list-group-item" href="#">Cambiar Contraseña </a>
+    </ul>
+    <br>
+    <a class="btn btn-light btn-block" href="{% url 'logout' %}"> <i class="fa fa-power-off"></i> <span class="text">Salir de sesion</span> </a> 
+    <!--   SIDEBAR .//END   -->
+</aside>
