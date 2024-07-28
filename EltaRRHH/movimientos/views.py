@@ -1,15 +1,55 @@
+from pyexpat.errors import messages
+from django.forms import ValidationError
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from usuarios.models import Usuario, UsuarioChofer
+from usuarios.models import UsuarioChofer
+from .models import Usuario, UsuarioChofer
 from . models import Movimientos
 from django.urls import reverse_lazy
 from .forms import MovimientosForm
 
 
-
-
 @login_required
+def registrarmovimiento(request):
+    if request.method == 'POST':
+        form = MovimientosForm(request.POST)
+        if form.is_valid():
+            usuario = request.user  # Asegúrate de usar `request.user`
+            chofer = None
+
+            if usuario.role == 'chofer':
+                try:
+                    usuario_chofer = UsuarioChofer.objects.get(usuario=usuario)
+                    chofer = usuario_chofer
+                except UsuarioChofer.DoesNotExist:
+                    form.add_error(None, "El usuario no es un chofer registrado.")
+                    return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
+
+            Movimientos.objects.create(
+                usuario=usuario,
+                chofer=chofer,
+                nFlota=form.cleaned_data['nFlota'],
+                inicio=form.cleaned_data['inicio'],
+                fin=form.cleaned_data['fin'],
+                kmInicio=form.cleaned_data['kmInicio'],
+                kmFin=form.cleaned_data['kmFin'],
+                lugar_inicio=form.cleaned_data['lugar_inicio'],
+                lugar_fin=form.cleaned_data['lugar_fin'],
+                tipo_kilometro=form.cleaned_data['tipo_kilometro'],
+                lleva_carga=form.cleaned_data['lleva_carga'],
+                permanencia=form.cleaned_data['permanencia'],
+                diasPermanencia=form.cleaned_data['diasPermanencia'],
+                cruce_frontera=form.cleaned_data['cruce_frontera'],
+                comentarios=form.cleaned_data['comentarios'],
+            )
+            return redirect('movimiento_lista')
+    else:
+        form = MovimientosForm()
+    
+    return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
+
+"""@login_required
 def registrarmovimiento(request):
     if request.method == 'POST':
         form = MovimientosForm(request.POST)
@@ -42,8 +82,8 @@ def registrarmovimiento(request):
     else:
         form = MovimientosForm()
     
-    return render(request, 'movimientos/registrar_movimiento.html', {'form': form})
-
+    return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
+"""
 
 
 class MovimientoCreateView(CreateView):
