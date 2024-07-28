@@ -67,15 +67,6 @@
 
     </style>
 
-<script type="text/javascript">  
-
-    $(document).ready(funtion() {      
-        setTimeout(function(){
-            $('#message').fadeOut('slow')        
-        },4000)
-    });
-</script>
-
 </head>
 <body>
     <!-- Left Panel -->
@@ -108,20 +99,22 @@
                     </li>
 
                     <li class="menu-title">Chofer</li><!-- /.menu-title -->
-<!-- 
+
                     <li>
-                        <a href="widgets.html"> <i class="menu-icon ti-email"></i>Movimientos </a>
+                        <a href="{% url 'registrarmovimiento' %}"> <i class="menu-icon fa fa-exchange"></i>Movimientos </a>
                     </li>
-                    -->
+
+
+<!--
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bar-chart"></i>Movimientos</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="menu-icon fa fa-line-chart"></i><a href="charts-chartjs.html">Chart JS</a></li>
                             <li><i class="menu-icon fa fa-area-chart"></i><a href="charts-flot.html">Flot Chart</a></li>
-                            <li><i class="menu-icon fa fa-pie-chart"></i><a href="charts-peity.html">Peity Chart</a></li>
+                        
                         </ul>
                     </li>
-
+-->
                     <li class="menu-title">Reportes</li><!-- /.menu-title -->
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-glass"></i>Pages</a>
@@ -218,6 +211,14 @@
     <!-- /#right-panel -->
 
     <!-- Scripts -->
+    <script type="text/javascript">  
+        $(document).ready(funtion() {      
+            setTimeout(function(){
+                $('#message').fadeOut('slow')        
+            },4000)
+        });
+    </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
