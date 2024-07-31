@@ -1,13 +1,10 @@
-from pyexpat.errors import messages
-from django.forms import ValidationError
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import UsuarioChofer
 from .models import Usuario, UsuarioChofer
 from . models import Movimientos
-from django.urls import reverse_lazy
 from .forms import MovimientosForm
+from django.db.models import Sum, Count, F
 
 
 @login_required
@@ -49,6 +46,7 @@ def registrarmovimiento(request):
     
     return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
 
+
 """@login_required
 def registrarmovimiento(request):
     if request.method == 'POST':
@@ -84,28 +82,36 @@ def registrarmovimiento(request):
     
     return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
 """
+### Lista los campos del Chofer ###
+def listmovimiento(request):
+    movimientos = Movimientos.objects.all()
+    context = {
+        'movimientos': movimientos,
+    }
+    return render(request, 'movimientos/listmovimiento.html', context)
 
+def movimiento(request):
+    # Total de kilómetros realizados
+    total_km = Movimientos.objects.aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
+    
+    # Total de movimientos
+    total_movimientos = Movimientos.objects.count()
 
-class MovimientoCreateView(CreateView):
-    model = Movimientos
-    fields = '__all__'  # Puedes especificar los campos explícitamente
-    template_name = 'movimiento_form.html'
-    success_url = reverse_lazy('movimiento-list')
+    
+    # Total de choferes que realizaron registros
+    total_choferes = Movimientos.objects.values('chofer').distinct().count()
+    
+    # Total de registros realizados por chofer
+    registros_por_chofer = Movimientos.objects.values('chofer').annotate(total_registros=Count('mov_id')).order_by('-total_registros')
+    
+    context = {
+        'total_km': total_km,
+        'total_choferes': total_choferes,
+        'registros_por_chofer': registros_por_chofer,
+        'total_movimientos': total_movimientos,
+    }
+    return render(request, 'movimientos/movimiento.html', context)
 
-class MovimientoListView(ListView):
-    model = Movimientos
-    template_name = 'movimiento_list.html'
-
-class MovimientoUpdateView(UpdateView):
-    model = Movimientos
-    fields = '__all__'  # Puedes especificar los campos explícitamente
-    template_name = 'movimiento_form.html'
-    success_url = reverse_lazy('movimiento-list')
-
-class MovimientoDeleteView(DeleteView):
-    model = Movimientos
-    template_name = 'movimiento_confirm_delete.html'
-    success_url = reverse_lazy('movimiento-list')
     
     
 """
