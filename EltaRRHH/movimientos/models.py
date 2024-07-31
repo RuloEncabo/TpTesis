@@ -36,6 +36,12 @@ class Movimientos(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Fecha y hora de creación
     updated_at = models.DateTimeField(auto_now=True)  # Fecha y hora de la última actualización
     
+    @property
+    def diferencia_km(self):
+        if self.kmFin is not None and self.kmInicio is not None:
+            return self.kmFin - self.kmInicio
+        return None
+    
     def __str__(self):
         return f"Movimiento {self.mov_id} - {self.chofer}"
     
