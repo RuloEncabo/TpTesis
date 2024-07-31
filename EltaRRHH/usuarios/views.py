@@ -74,14 +74,31 @@ def registro(request):
                         psicofisico_venc=form.cleaned_data['psicofisico_venc'],
                         curso_venc=form.cleaned_data['curso_venc']
                     )
-                
-                return redirect('login')  # Redirigir al login o a donde desees
+                    
+                    #Activar al usuario
+                    current_site = get_current_site(request)
+                    mail_subject = 'por favor active su cuenta de ELTA'
+                    body = render_to_string ('usuarios/usr_verificacion_mail.html',{
+                        
+                        'user':user,
+                        'domain':current_site.domain,
+                        'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token':default_token_generator.make_token(user),
+                        
+                    })
+                    to_email = email
+                    send_email = EmailMessage(mail_subject,body,to=[to_email])
+                    send_email.send()   
+                    #messages.success(request,'Se Registro el Usuario Exitosamente')
+                    return redirect('/usuarios/login/?command=verification&email='+email)
+
             except IntegrityError as e:
                 form.add_error(None, "Error al crear el usuario. Por favor, intente nuevamente.")
     else:
         form = RegistroForm()
     
     return render(request, 'usuarios/registro.html', {'form': form})
+
 ### Funcion para Login ###
 def login(request):
     #verifico que el metodo es post
