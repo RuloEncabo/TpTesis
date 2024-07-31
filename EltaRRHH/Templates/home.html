@@ -30,43 +30,6 @@
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
 
-<style>
-    #weatherWidget .currentDesc {
-        color: #ffffff!important;
-    }
-        .traffic-chart {
-            min-height: 335px;
-        }
-        #flotPie1  {
-            height: 150px;
-        }
-        #flotPie1 td {
-            padding:3px;
-        }
-        #flotPie1 table {
-            top: 20px!important;
-            right: -10px!important;
-        }
-        .chart-container {
-            display: table;
-            min-width: 270px ;
-            text-align: left;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-        #flotLine5  {
-            height: 105px;
-        }
-
-        #flotBarChart {
-            height: 150px;
-        }
-        #cellPaiChart{
-            height: 160px;
-        }
-
-    </style>
-
 </head>
 <body>
     <!-- Left Panel -->
@@ -87,7 +50,10 @@
                                 <li><i class="fa fa-users"></i><a href="{%  url 'login'  %}"> Login</a></li>
                 </ul>
                             </li>
-
+                            <li>
+                                <a href=" {%  url 'listar'  %} "> <i class="menu-icon fa fa-users"></i> Chofer </a>
+                            </li>
+        <!--
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Alta Chofer</a>
                         <ul class="sub-menu children dropdown-menu">                           
@@ -101,10 +67,8 @@
                     <li class="menu-title">Chofer</li><!-- /.menu-title -->
 
                     <li>
-                        <a href="{% url 'registrarmovimiento' %}"> <i class="menu-icon fa fa-exchange"></i>Movimientos </a>
+                        <a href="{% url 'movimiento' %}"> <i class="menu-icon fa fa-road"></i> Movimientos </a>
                     </li>
-
-
 <!--
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bar-chart"></i>Movimientos</a>
