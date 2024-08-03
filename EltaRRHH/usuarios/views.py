@@ -173,8 +173,8 @@ def listusuario(request):
 
 ### Lista los campos del Chofer ###
 def listusuariochofer(request):
-    usuarioschofer = UsuarioChofer.objects.all()
+    chofer = Chofer.objects.all()
     context = {
-        'usuarioschofer': usuarioschofer,
+        'chofer': chofer,
     }
     return render(request, 'usuarios/listusuariochofer.html', context)
