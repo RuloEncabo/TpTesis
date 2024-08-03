@@ -1,0 +1,104 @@
+{% load static %}
+{% include 'includes/nav.html' %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+<link rel="stylesheet" href="./">
+<link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+<link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+
+<style>
+    .table-custom-small td, .table-custom-small th {
+            font-size: 0.8rem; /* Ajusta este valor según sea necesario */
+    }
+</style>
+</head>
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+    <div class="container">
+        <div class="row">
+            {% include 'includes/listar_sidebar.html' %}
+            <main class="col-md-9">
+                <article class="card">
+                    <header class="card-header">
+                        <strong class="d-inline-block mr-4"> Choferes Registrados </strong>
+                    </header>
+                    <div class="card-body">
+                        <div class="row"> 
+                            <div class="col-md-12">
+                            
+                                    <table class="table table-striped table-hover table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="text-sm">Nombre</th>
+                                                <th scope="col" class="text-sm">DNI</th>
+                                                <th scope="col" class="text-sm">FCA</th>
+                                                <th scope="col" class="text-sm">Licencia </th>
+                                                <th scope="col" class="text-sm">Psicofísico </th>
+                                                <th scope="col" class="text-sm">Curso </th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for chofer in choferes %}
+                                            <tr>
+                                                                                                
+                                                <td class="text-dark text-sm">{{ nombre_Completo }}</td>
+                                                <td class="text-dark text-sm">{{ chofer.dni }}</td>
+                                                <td class="text-dark text-sm">{{ chofer.dias_ingresoFCA_venc }}</td>
+                                                <td class="text-dark text-sm">{{ chofer.dias_licencia_venc }}</td>
+                                                <td class="text-dark text-sm">{{ chofer.dias_psicofisico_venc }}</td>
+                                                <td class="text-dark text-sm">{{ chofer.dias_curso_venc }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+</section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+    {% endblock %}
+
+    <footer class="site-footer">
+    <div class="footer-inner bg-white">
+        <div class="row">
+            <div class="col-sm-6">
+                Copyright &copy; 2024 Marcelo Encabo
+            </div>
+            <div class="col-sm-6 text-right">
+                Designed by <a href="https://colorlib.com">MarceloCabo</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- /.site-footer -->
+</div>
+<!-- /#right-panel -->
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
