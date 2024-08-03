@@ -28,7 +28,7 @@ urlpatterns = [
     path('', lambda request: redirect('login')),
     path('chofer/', include('chofer.urls')),
     path('movimientos/', include('movimientos.urls')),
-    #path('TipoKilometro/', include('TipoKilometro.urls')),
+    path('TipoKilometro/', include('TipoKilometro.urls')),
     path('Viaje/', include('Viaje.urls')),
     
 
