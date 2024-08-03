@@ -1,7 +1,7 @@
-from datetime import date
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.apps import apps
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.db import models
+from datetime import date
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, phone_number, password=None, role=None):
@@ -19,15 +19,14 @@ class MyAccountManager(BaseUserManager):
         )
 
         user.set_password(password)
-        user.role = role  # Establecer el rol del usuario
+        user.role = role
         user.save(using=self._db)
 
-        # Crear una instancia de UsuarioChofer solo si el rol es 'chofer'
         if role == 'chofer':
             UsuarioChofer = apps.get_model('usuarios', 'UsuarioChofer')
             UsuarioChofer.objects.create(
-                usuario=user,  # Asociar el usuario al chofer
-                dni="00000000",  # Modificar según tus necesidades
+                usuario=user,
+                dni="00000000",
                 calle="Calle Ejemplo",
                 nrocalle="123",
                 piso="1",
@@ -36,7 +35,6 @@ class MyAccountManager(BaseUserManager):
                 localidad="Localidad Ejemplo",
                 provincia="Provincia Ejemplo",
                 cp="1234",
-                #movil=phone_number,
                 contactoemergencia="Contacto Ejemplo",
                 parentesco="Parentesco Ejemplo",
                 foto=None,
@@ -98,10 +96,9 @@ class Usuario(AbstractBaseUser):
     
     def has_module_perms(self, add_label):
         return True
-    #devuelve nombre y apelllido
+
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
-    
     
 class UsuarioChofer(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
