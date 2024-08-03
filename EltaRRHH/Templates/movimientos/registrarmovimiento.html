@@ -123,6 +123,11 @@
 
                         <button type="submit" class="btn btn-primary btn-block">Registrar Movimiento</button>
                     </form>
+                    {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
               </div>
             </div>
           </div>
@@ -147,29 +152,7 @@
       const permanenciaField = document.getElementById('id_permanencia');
       const diasPermanenciaField = document.getElementById('id_diasPermanencia');
 
-      function toggleFields() {
-          const inicioVal = inicioField.value;
-          const kmInicioVal = kmInicioField.value;
-          const lugarInicioVal = lugarInicioField.value;
-          const tipoKilometroVal = tipoKilometroField.value;
-          const llevaCargaVal = llevaCargaField.checked;
-          
-          const enableFields = inicioVal && kmInicioVal && lugarInicioVal && tipoKilometroVal && llevaCargaVal;
-
-          finField.disabled = !enableFields;
-          kmFinField.disabled = !enableFields;
-          lugarFinField.disabled = !enableFields;
-          permanenciaField.disabled = !enableFields;
-          diasPermanenciaField.disabled = !enableFields;
-      }
-
-      inicioField.addEventListener('input', toggleFields);
-      kmInicioField.addEventListener('input', toggleFields);
-      lugarInicioField.addEventListener('input', toggleFields);
-      tipoKilometroField.addEventListener('change', toggleFields);
-      llevaCargaField.addEventListener('change', toggleFields);
-
-      toggleFields();  // Initial call to set the initial state
+    const cruceFronteraField = document.getElementById('id_cruce_frontera');
   });
 </script>
 <!-- ========================= SECTION CONTENT END// ========================= -->
