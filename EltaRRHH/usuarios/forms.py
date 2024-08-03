@@ -3,8 +3,7 @@ from .models import Usuario
 
 class RegistroForm(forms.ModelForm):
         ROLES = (
-                ('admin', 'Administrador'),
-                ('rrhh', 'RRHH'),
+                ('admin', 'RRHH'),
                 ('chofer', 'Chofer'),
         )
 
@@ -103,7 +102,11 @@ class RegistroForm(forms.ModelForm):
 
         class Meta:
                 model = Usuario
-                fields = ['first_name', 'last_name', 'phone_number', 'email', 'password', 'confirm_password', 'role', 'legajo', 'dni', 'calle', 'nrocalle', 'piso', 'departamento', 'barrio', 'localidad', 'provincia', 'cp', 'contactoemergencia', 'parentesco', 'foto', 'ingresoFCA_venc', 'licencia_venc', 'psicofisico_venc', 'curso_venc']
+                fields = ['first_name', 'last_name', 'phone_number', 'email', 'password', 
+                        'confirm_password', 'role', 'legajo', 'dni', 'calle', 'nrocalle', 
+                        'piso', 'departamento', 'barrio', 'localidad', 'provincia', 'cp', 
+                        'contactoemergencia', 'parentesco', 'foto', 'ingresoFCA_venc', 
+                        'licencia_venc', 'psicofisico_venc', 'curso_venc']
 
         def clean(self):
                 cleaned_data = super(RegistroForm, self).clean()
@@ -111,6 +114,4 @@ class RegistroForm(forms.ModelForm):
                 confirm_password = cleaned_data.get('confirm_password')
 
                 if password != confirm_password:
-                        raise forms.ValidationError(
-                        "Las contraseñas no coinciden"
-                )
+                        raise forms.ValidationError("Las contraseñas no coinciden")
