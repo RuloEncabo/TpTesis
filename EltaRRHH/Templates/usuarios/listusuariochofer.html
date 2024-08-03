@@ -1,5 +1,5 @@
 {% load static %}
-
+{% include 'includes/nav.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
@@ -52,12 +52,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for usuariochofer in usuarioschofer %}
+                                            {% for chofer in choferes %}
                                             <tr>
                                                 
-                                                <td class="text-dark text-sm">{{ usuariochofer.full_name}}</td>
-                                                <td class="text-sm">{{ usuariochofer.ingresoFCA_venc }}</td>
-                                                <td class="text-sm">{{ usuariochofer.licencia_venc }}</td>
+                                                <td class="text-dark text-sm">{{ chofer.nombre_Completo}}</td>
+                                                <td class="text-sm">{{ chofer.ingresoFCA_venc }}</td>
+                                                <td class="text-sm">{{ chofer.licencia_venc }}</td>
                                             
                                             </tr>
                                             {% endfor %}
