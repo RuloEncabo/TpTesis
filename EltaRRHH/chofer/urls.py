@@ -6,6 +6,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('listchofer/', views.listchofer, name='listchofer'),
+    path('listdoc/', views.listdoc, name='listdoc'),
 ]
 
 if settings.DEBUG:
