@@ -1,15 +1,40 @@
+from datetime import date
 from django.shortcuts import render, redirect
 from .forms import ChoferForm
 from .models import Chofer
 
+
 ####
 def listchofer(request):
-    choferes = Chofer.objects.all().order_by('-date_joined')
+    choferes = Chofer.objects.all()
+    
+    # Calcular días restantes para cada fecha de vencimiento
+    for chofer in choferes:
+        chofer.dias_ingresoFCA_venc = (chofer.ingresoFCA_venc - date.today()).days
+        chofer.dias_licencia_venc = (chofer.licencia_venc - date.today()).days
+        chofer.dias_psicofisico_venc = (chofer.psicofisico_venc - date.today()).days
+        chofer.dias_curso_venc = (chofer.curso_venc - date.today()).days
+
     context = {
         'choferes': choferes,
     }
-    return render(request, 'chofer/listchofer.html', context)
+    return render(request, 'chofer/listusuariochofer.html', context)
 
+
+def listdoc(request):
+    choferes = Chofer.objects.all()
+    
+    # Calcular días restantes para cada fecha de vencimiento
+    for chofer in choferes:
+        chofer.dias_ingresoFCA_venc = (chofer.ingresoFCA_venc - date.today()).days
+        chofer.dias_licencia_venc = (chofer.licencia_venc - date.today()).days
+        chofer.dias_psicofisico_venc = (chofer.psicofisico_venc - date.today()).days
+        chofer.dias_curso_venc = (chofer.curso_venc - date.today()).days
+
+    context = {
+        'choferes': choferes,
+    }
+    return render(request, 'chofer/listdoc.html', context)
 """
 def registro_chofer(request):
     if request.method == 'POST':
