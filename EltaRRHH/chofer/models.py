@@ -33,3 +33,9 @@ class Chofer(models.Model):
 
     def __str__(self):
         return f'{self.nombre} {self.apellido}'
+    
+    def nombre_Completo(self):
+        return f'{self.nombre} {self.apellido}'
+    
+    def direccion(self):
+        return f'{self.calle}{self.nrocalle} {self.piso} {self.barrio}'
