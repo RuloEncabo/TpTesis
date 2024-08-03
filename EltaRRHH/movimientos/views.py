@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import UsuarioChofer
 from django.db.models import Sum, Count, F
-import pandas as pd
+#import pandas as pd
 from .models import Movimientos
 from chofer.models import Chofer
 from .forms import MovimientosForm
@@ -141,7 +141,13 @@ def movimiento(request):
     }
     return render(request, 'movimientos/movimiento.html', context)
 
-    
+### Lista los campos del Chofer ###
+def listusuariochofer(request):
+    usuarioschofer = UsuarioChofer.objects.all()
+    context = {
+        'usuarioschofer': usuarioschofer,
+    }
+    return render(request, 'chofer/listusuariochofer.html', context)
     
 """
 @login_required
