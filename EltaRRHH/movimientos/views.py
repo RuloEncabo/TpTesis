@@ -1,51 +1,57 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import UsuarioChofer
-from .models import Usuario, UsuarioChofer
-from . models import Movimientos
-from .forms import MovimientosForm
 from django.db.models import Sum, Count, F
-
+import pandas as pd
+from .models import Movimientos
+from chofer.models import Chofer
+from .forms import MovimientosForm
 
 @login_required
 def registrarmovimiento(request):
     if request.method == 'POST':
         form = MovimientosForm(request.POST)
         if form.is_valid():
-            usuario = request.user  # Asegúrate de usar `request.user`
-            chofer = None
+            try:
+                usuario = request.user
 
-            if usuario.role == 'chofer':
+                # Verificar si el usuario es un chofer
                 try:
-                    usuario_chofer = UsuarioChofer.objects.get(usuario=usuario)
-                    chofer = usuario_chofer
-                except UsuarioChofer.DoesNotExist:
-                    form.add_error(None, "El usuario no es un chofer registrado.")
-                    return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
+                    chofer = Chofer.objects.get(usuario=usuario)
+                except Chofer.DoesNotExist:
+                    chofer = None
 
-            Movimientos.objects.create(
-                usuario=usuario,
-                chofer=chofer,
-                nFlota=form.cleaned_data['nFlota'],
-                inicio=form.cleaned_data['inicio'],
-                fin=form.cleaned_data['fin'],
-                kmInicio=form.cleaned_data['kmInicio'],
-                kmFin=form.cleaned_data['kmFin'],
-                lugar_inicio=form.cleaned_data['lugar_inicio'],
-                lugar_fin=form.cleaned_data['lugar_fin'],
-                tipo_kilometro=form.cleaned_data['tipo_kilometro'],
-                lleva_carga=form.cleaned_data['lleva_carga'],
-                permanencia=form.cleaned_data['permanencia'],
-                diasPermanencia=form.cleaned_data['diasPermanencia'],
-                cruce_frontera=form.cleaned_data['cruce_frontera'],
-                comentarios=form.cleaned_data['comentarios'],
-            )
-            return redirect('movimiento_lista')
+                # Crear el movimiento
+                Movimientos.objects.create(
+                    usuario_id=usuario,  # Usuario actual
+                    chofer=chofer,  # Puede ser None si el usuario no es un chofer
+                    nFlota=form.cleaned_data['nFlota'],
+                    inicio=form.cleaned_data['inicio'],
+                    fin=form.cleaned_data['fin'],
+                    kmInicio=form.cleaned_data['kmInicio'],
+                    kmFin=form.cleaned_data['kmFin'],
+                    lugar_inicio=form.cleaned_data['lugar_inicio'],
+                    lugar_fin=form.cleaned_data['lugar_fin'],
+                    tipo_kilometro=form.cleaned_data['tipo_kilometro'],
+                    lleva_carga=form.cleaned_data['lleva_carga'],
+                    permanencia=form.cleaned_data['permanencia'],
+                    diasPermanencia=form.cleaned_data['diasPermanencia'],
+                    cruce_frontera=form.cleaned_data['cruce_frontera'],
+                    active=form.cleaned_data['active'],
+                    comentarios=form.cleaned_data['comentarios'],
+                )
+                
+                messages.success(request, 'Movimiento registrado exitosamente.')
+                return redirect('listmovimiento')
+            except Exception as e:
+                messages.error(request, f'Error inesperado: {str(e)}')
+        else:
+            messages.error(request, 'Formulario inválido. Por favor, revisa los datos ingresados.')
     else:
         form = MovimientosForm()
-    
-    return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
 
+    return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
 
 """@login_required
 def registrarmovimiento(request):
@@ -89,6 +95,29 @@ def listmovimiento(request):
         'movimientos': movimientos,
     }
     return render(request, 'movimientos/listmovimiento.html', context)
+
+
+### Lista los campos del Chofer que esta logeado ###
+@login_required
+def listmovimientoChofer(request):
+    usuario = request.user
+    try:
+        chofer = UsuarioChofer.objects.get(usuario=usuario)
+        movimientos = Movimientos.objects.filter(chofer=chofer)
+    except UsuarioChofer.DoesNotExist:
+        movimientos = Movimientos.objects.none()
+        # O podrías redirigir a una página de error si prefieres
+
+    # Calcular la diferencia entre kmInicio y kmFin para cada movimiento
+    for movimiento in movimientos:
+        movimiento.km_difference = (movimiento.kmFin or 0) - movimiento.kmInicio
+
+    context = {
+        'movimientos': movimientos,
+    }
+    return render(request, 'movimientos/list_mov_chofer.html', context)
+
+
 
 def movimiento(request):
     # Total de kilómetros realizados
