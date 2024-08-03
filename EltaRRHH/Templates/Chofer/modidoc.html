@@ -1,0 +1,85 @@
+{% load static %}
+{% include 'includes/nav.html' %}
+
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+
+<section class="section-content padding-y">
+    <!-- ============================ COMPONENT REGISTER ================================= -->
+    <div class="card mx-auto" style="max-width: 520px; margin-top: 40px">
+    <article class="card-body">
+
+        {% include 'includes/alerts.html' %}
+
+        <header class="mb-4"><h4 class="card-title">Modificar Vencimientos del Chofer</h4></header>
+        <form action="{% url 'edit_chofer' chofer.id %}" method="POST"> <!-- Asegúrate de usar la URL correcta -->
+            {% csrf_token %}
+
+            <!-- Bloque Documentos -->
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Ingreso FCA Vencimiento</label>
+                {{ form.ingresoFCA_venc }}
+              </div>
+              <div class="col form-group">
+                <label>Licencia Vencimiento</label>
+                {{ form.licencia_venc }}
+              </div>
+            </div>
+  
+            <div class="form-row">
+              <div class="col form-group">
+                <label>Psicofísico Vencimiento</label>
+                {{ form.psicofisico_venc }}
+              </div>
+              <div class="col form-group">
+                <label>Curso Vencimiento</label>
+                {{ form.curso_venc }}
+              </div>
+            </div>
+  
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">
+                Guardar Cambios
+                </button>
+            </div>
+            {{ form.non_field_errors }}
+        </form>
+      </article>
+    </div>
+    <!-- ============================ COMPONENT REGISTER END.// ================================= -->
+  </section>
+
+
+
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+    {% endblock %}
+
+    <footer class="site-footer">
+    <div class="footer-inner bg-white">
+        <div class="row">
+            <div class="col-sm-6">
+                Copyright &copy; 2024 Marcelo Encabo
+            </div>
+            <div class="col-sm-6 text-right">
+                Designed by <a href="https://colorlib.com">MarceloCabo</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- /.site-footer -->
+</div>
+<!-- /#right-panel -->
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
