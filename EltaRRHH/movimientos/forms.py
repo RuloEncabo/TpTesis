@@ -2,69 +2,6 @@ from django import forms
 from .models import Movimientos, TipoKilometros
 
 
-class MovimientosForm(forms.ModelForm):
-    
-        TipoKilometros = (
-                ('1', 'Km Normales'),
-                ('2', 'Km al 100%'),
-                ('3', 'Km al 100% - 1.2'),
-        )
-    
-        nFlota = forms.CharField(widget=forms.TextInput(attrs={
-            'placeholder': 'Ingrese Número de Flota',
-            'class': 'form-control',
-        }))
-        inicio = forms.DateTimeField(widget=forms.DateTimeInput(attrs={
-            'placeholder': 'Fecha y Hora de Inicio',
-            'class': 'form-control',
-            'type': 'datetime-local'
-        }))
-        fin = forms.DateTimeField(widget=forms.DateTimeInput(attrs={
-            'placeholder': 'Fecha y Hora de Fin',
-            'class': 'form-control',
-            'type': 'datetime-local'
-        }), required=False)
-        kmInicio = forms.IntegerField(widget=forms.NumberInput(attrs={
-            'placeholder': 'Kilómetros Iniciales',
-            'class': 'form-control',
-        }))
-        kmFin = forms.IntegerField(widget=forms.NumberInput(attrs={
-            'placeholder': 'Kilómetros Finales',
-            'class': 'form-control',
-        }), required=False)
-        lugar_inicio = forms.CharField(widget=forms.TextInput(attrs={
-            'placeholder': 'Lugar de Inicio',
-            'class': 'form-control',
-        }))
-        lugar_fin = forms.CharField(widget=forms.TextInput(attrs={
-            'placeholder': 'Lugar de Fin',
-            'class': 'form-control',
-        }), required=False)
-        
-        tipo_kilometro = forms.ChoiceField(choices=TipoKilometros, widget=forms.Select(attrs={
-                'class': 'form-control',
-        }))
-        lleva_carga = forms.BooleanField(widget=forms.CheckboxInput(attrs={
-            'class': 'form-check-input',
-        }), required=False)
-        permanencia = forms.BooleanField(widget=forms.CheckboxInput(attrs={
-            'class': 'form-check-input',
-        }), required=False)
-        diasPermanencia = forms.IntegerField(widget=forms.NumberInput(attrs={
-            'placeholder': 'Días de Permanencia',
-            'class': 'form-control',
-        }), required=False)
-        cruce_frontera = forms.BooleanField(widget=forms.CheckboxInput(attrs={
-            'class': 'form-check-input',
-        }), required=False)
-        comentarios = forms.CharField(widget=forms.Textarea(attrs={
-            'placeholder': 'Comentarios',
-            'class': 'form-control',
-        }), required=False)
-
-
-
-
 
 class MovimientosForm(forms.ModelForm):
     tipo_kilometro = forms.ModelChoiceField(queryset=TipoKilometros.objects.all())
