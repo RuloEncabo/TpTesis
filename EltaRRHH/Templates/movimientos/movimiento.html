@@ -1,5 +1,5 @@
 {% load static %}
-
+{% include 'includes/nav.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
@@ -23,8 +23,11 @@
 
 </head>
 {% block content %}
+<br>
 <!-- ========================= SECTION CONTENT ========================= -->
+
 <section class="section-conten padding-y bg">
+    
     <div class="container-fluid">
         <div class="row">
             {% include 'includes/listar_sidebarMovChofer.html' %}
