@@ -32,9 +32,9 @@ class Chofer(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'{self.nombre} {self.apellido}'
+        return self.dni
     
-    def nombre_Completo(self):
+    def full_name(self):
         return f'{self.nombre} {self.apellido}'
     
     def direccion(self):
