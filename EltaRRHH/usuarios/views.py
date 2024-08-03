@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from .forms import RegistroForm
 from .models import Usuario, UsuarioChofer
+from chofer.models import Chofer 
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib.sites.shortcuts import get_current_site
@@ -50,13 +51,15 @@ def registro(request):
                     email=email,
                     password=form.cleaned_data['password'],
                     role=form.cleaned_data['role'],
-                    username = email.split("@")[0]
+                    username=email.split("@")[0]
                 )
                 
-                # Si el rol es chofer, crear instancia de UsuarioChofer
+                # Si el rol es chofer, crear instancia de Chofer
                 if form.cleaned_data['role'] == 'chofer':
-                    UsuarioChofer.objects.create(
+                    Chofer.objects.create(
                         usuario=user,
+                        nombre=form.cleaned_data['first_name'],
+                        apellido=form.cleaned_data['last_name'],
                         dni=form.cleaned_data['dni'],
                         calle=form.cleaned_data['calle'],
                         nrocalle=form.cleaned_data['nrocalle'],
@@ -66,6 +69,7 @@ def registro(request):
                         localidad=form.cleaned_data['localidad'],
                         provincia=form.cleaned_data['provincia'],
                         cp=form.cleaned_data['cp'],
+                        movil=form.cleaned_data['phone_number'],
                         contactoemergencia=form.cleaned_data['contactoemergencia'],
                         parentesco=form.cleaned_data['parentesco'],
                         foto=form.cleaned_data['foto'],
@@ -75,29 +79,31 @@ def registro(request):
                         curso_venc=form.cleaned_data['curso_venc']
                     )
                     
-                    #Activar al usuario
-                    current_site = get_current_site(request)
-                    mail_subject = 'por favor active su cuenta de ELTA'
-                    body = render_to_string ('usuarios/usr_verificacion_mail.html',{
-                        
-                        'user':user,
-                        'domain':current_site.domain,
-                        'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                        'token':default_token_generator.make_token(user),
-                        
-                    })
-                    to_email = email
-                    send_email = EmailMessage(mail_subject,body,to=[to_email])
-                    send_email.send()   
-                    #messages.success(request,'Se Registro el Usuario Exitosamente')
-                    return redirect('/usuarios/login/?command=verification&email='+email)
+                # Enviar correo de activación
+                current_site = get_current_site(request)
+                mail_subject = 'Por favor, active su cuenta de ELTA'
+                body = render_to_string('usuarios/usr_verificacion_mail.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': default_token_generator.make_token(user),
+                })
+                to_email = email
+                send_email = EmailMessage(mail_subject, body, to=[to_email])
+                send_email.send()
+                
+                messages.success(request, 'Se ha registrado el usuario exitosamente. Por favor, verifica tu email para activar tu cuenta.')
+                return redirect('/usuarios/login/?command=verification&email=' + email)
 
             except IntegrityError as e:
                 form.add_error(None, "Error al crear el usuario. Por favor, intente nuevamente.")
+            except Exception as e:
+                form.add_error(None, f"Error inesperado: {str(e)}")
     else:
         form = RegistroForm()
     
     return render(request, 'usuarios/registro.html', {'form': form})
+
 
 ### Funcion para Login ###
 def login(request):
