@@ -1,5 +1,5 @@
 from datetime import date
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .forms import ChoferForm
 from .models import Chofer
 
@@ -20,7 +20,7 @@ def listchofer(request):
     }
     return render(request, 'chofer/listusuariochofer.html', context)
 
-
+###  Funcion para listar los Vencimientos ###
 def listdoc(request):
     choferes = Chofer.objects.all()
     
@@ -35,6 +35,23 @@ def listdoc(request):
         'choferes': choferes,
     }
     return render(request, 'chofer/listdoc.html', context)
+
+
+
+###  Funcion para modificar los Vencimientos ###
+def modidoc(request, id):
+    chofer = get_object_or_404(Chofer, id=id)
+
+    if request.method == 'POST':
+        form = ChoferForm(request.POST, instance=chofer)
+        if form.is_valid():
+            form.save()
+            return redirect('listdoc')  # Redirige a la lista después de guardar
+    else:
+        form = ChoferForm(instance=chofer)
+
+    return render(request, 'chofer/modidoc.html', {'form': form, 'chofer': chofer})
+
 """
 def registro_chofer(request):
     if request.method == 'POST':
