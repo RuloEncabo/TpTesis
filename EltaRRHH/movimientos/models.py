@@ -6,6 +6,7 @@ from django.db import models
 from django.forms import ValidationError
 from usuarios.models import Usuario
 from usuarios.models import UsuarioChofer
+from chofer.models import Chofer
 
 class TipoKilometros(models.Model):
     nombre = models.CharField(max_length=100)
@@ -17,7 +18,7 @@ class TipoKilometros(models.Model):
 class Movimientos(models.Model):
     mov_id = models.AutoField(primary_key=True)
     usuario_id = models.ForeignKey(Usuario, on_delete=models.CASCADE)  # Asegúrate de que esta línea esté activa
-    chofer= models.ForeignKey(UsuarioChofer, null=True, blank=True, on_delete=models.SET_NULL)
+    chofer = models.ForeignKey(Chofer, on_delete=models.SET_NULL, null=True, blank=True)
     nFlota = models.CharField(max_length=60, null=True, blank=True)
     inicio = models.DateTimeField()
     fin = models.DateTimeField(null=True, blank=True)
@@ -30,7 +31,7 @@ class Movimientos(models.Model):
     permanencia = models.BooleanField(default=False)
     diasPermanencia = models.IntegerField(default=0)
     cruce_frontera = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
+    #active = models.BooleanField(default=False)
     modif = models.DateTimeField(auto_now=True)
     comentarios = models.CharField(max_length=250, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)  # Fecha y hora de creación
@@ -42,6 +43,12 @@ class Movimientos(models.Model):
             return self.kmFin - self.kmInicio
         return None
     
+
+    def __str__(self):
+        return f'{self.usuario_id} - {self.inicio} a {self.fin}'
+    
+    """ 
+    
     def __str__(self):
         return f"Movimiento {self.mov_id} - {self.chofer}"
     
@@ -52,9 +59,9 @@ class Movimientos(models.Model):
             raise ValidationError('kmFin debe ser mayor que kmInicio')
 
         # Verificar si el chofer tiene un movimiento sin cerrar
-        if not self.fin:
-            if Movimientos.objects.filter(chofer=self.chofer, fin__isnull=True).exclude(pk=self.pk).exists():
-                raise ValidationError('El chofer tiene un movimiento sin cerrar.')
+        #  if not self.fin:
+        #     if Movimientos.objects.filter(chofer=self.chofer, fin__isnull=True).exclude(pk=self.pk).exists():
+        #        raise ValidationError('El chofer tiene un movimiento sin cerrar.')
 
         # Verificar que lugar_inicio no se pueda modificar si hay un movimiento sin cerrar
         ultimo_movimiento = Movimientos.objects.filter(chofer=self.chofer).order_by('-inicio').first()
@@ -62,7 +69,7 @@ class Movimientos(models.Model):
             raise ValidationError('No se puede modificar el campo lugar_inicio mientras haya un movimiento sin cerrar.')
     
     
-    """ 
+   
         # Verificar que haya un viaje activo
         viaje_activo = Viaje.objects.filter(chofer=self.chofer, activo=True).exists()
         if not viaje_activo:
