@@ -7,7 +7,7 @@ from django.conf import settings
 urlpatterns = [
     path('listchofer/', views.listchofer, name='listchofer'),
     path('listdoc/', views.listdoc, name='listdoc'),
-    path('modidoc/<int:id>/', views.modidoc, name='modidoc'),
+    path('modidoc/', views.modidoc, name='modidoc'),
 ]
 
 if settings.DEBUG:
