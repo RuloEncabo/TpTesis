@@ -28,6 +28,7 @@
 </style>
 </head>
 {% block content %}
+<br>
 <!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-conten padding-y bg">
     <div class="container">
@@ -60,7 +61,7 @@
                                                                                                 
                                                 <td class="text-dark text-sm">{{ chofer.full_name }}</td>
                                                 <td class="text-dark text-sm">{{ chofer.dni }}</td>
-                                                <td class="text-dark text-sm">{{ chofer.dias_ingresoFCA_venc }}</td>
+                                                <td class="text-dark text-sm">{{ chofer.direccion }}</td>
                                                 <td class="text-dark text-sm">{{ chofer.dias_licencia_venc }}</td>
                                                 <td class="text-dark text-sm">{{ chofer.dias_psicofisico_venc }}</td>
                                                 <td class="text-dark text-sm">{{ chofer.dias_curso_venc }}</td>
@@ -80,25 +81,11 @@
     <!-- ========================= SECTION CONTENT END// ========================= -->
     {% endblock %}
 
-    <footer class="site-footer">
-    <div class="footer-inner bg-white">
-        <div class="row">
-            <div class="col-sm-6">
-                Copyright &copy; 2024 Marcelo Encabo
-            </div>
-            <div class="col-sm-6 text-right">
-                Designed by <a href="https://colorlib.com">MarceloCabo</a>
-            </div>
-        </div>
-    </div>
-</footer>
-<!-- /.site-footer -->
-</div>
-<!-- /#right-panel -->
-
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
 <script src="{% static 'js/main.js' %}"></script>
+<br>
+{% include 'includes/footer.html' %}
