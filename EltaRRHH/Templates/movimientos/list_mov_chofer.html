@@ -1,4 +1,5 @@
 {% load static %}
+{% include 'includes/nav.html' %}
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -98,21 +99,6 @@
     <!-- ========================= SECTION CONTENT END// ========================= -->
     {% endblock %}
 
-    <footer class="site-footer">
-    <div class="footer-inner bg-white">
-        <div class="row">
-            <div class="col-sm-6">
-                Copyright &copy; 2024 ELTA
-            </div>
-            <div class="col-sm-6 text-right">
-                Designed by <a href="https://colorlib.com">MarceloCabo</a>
-            </div>
-        </div>
-    </div>
-</footer>
-<!-- /.site-footer -->
-</div>
-<!-- /#right-panel -->
 
 <!-- Scripts -->
 
@@ -145,3 +131,5 @@
     $('#bootstrap-data-table-export').DataTable();
 } );
 </script>
+<br>
+{% include 'includes/footer.html' %}
