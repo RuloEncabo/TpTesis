@@ -38,7 +38,6 @@ def registrarmovimiento(request):
                     permanencia=form.cleaned_data['permanencia'],
                     diasPermanencia=form.cleaned_data['diasPermanencia'],
                     cruce_frontera=form.cleaned_data['cruce_frontera'],
-                    active=form.cleaned_data['active'],
                     comentarios=form.cleaned_data['comentarios'],
                 )
                 
