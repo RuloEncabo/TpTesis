@@ -39,8 +39,9 @@ def listdoc(request):
 
 
 ###  Funcion para modificar los Vencimientos ###
-def modidoc(request, id):
-    chofer = get_object_or_404(Chofer, id=id)
+def modidoc(request):
+    Id = 2
+    chofer = get_object_or_404(Chofer, Id_chofer=Id)
 
     if request.method == 'POST':
         form = ChoferForm(request.POST, instance=chofer)
