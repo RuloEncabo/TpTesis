@@ -102,7 +102,7 @@ def listmovimiento(request):
 def listmovimientoChofer(request):
     usuario = request.user
     try:
-        chofer = UsuarioChofer.objects.get(usuario=usuario)
+        chofer = Chofer.objects.get(usuario=usuario)
         movimientos = Movimientos.objects.filter(chofer=chofer)
     except UsuarioChofer.DoesNotExist:
         movimientos = Movimientos.objects.none()
