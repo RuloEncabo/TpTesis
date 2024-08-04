@@ -3,7 +3,8 @@
 
 {% block content %}
 <!-- ========================= SECTION CONTENT ========================= -->
-
+<br>
+<br>
 <section class="section-content padding-y">
     <!-- ============================ COMPONENT REGISTER ================================= -->
     <div class="card mx-auto" style="max-width: 520px; margin-top: 40px">
@@ -12,7 +13,7 @@
         {% include 'includes/alerts.html' %}
 
         <header class="mb-4"><h4 class="card-title">Modificar Vencimientos del Chofer</h4></header>
-        <form action="{% url 'edit_chofer' chofer.id %}" method="POST"> <!-- Asegúrate de usar la URL correcta -->
+        <form action="{% url 'modidoc' %}" method="POST"> <!-- Asegúrate de usar la URL correcta -->
             {% csrf_token %}
 
             <!-- Bloque Documentos -->
@@ -42,9 +43,13 @@
                 <button type="submit" class="btn btn-primary btn-block">
                 Guardar Cambios
                 </button>
+                
             </div>
             {{ form.non_field_errors }}
         </form>
+        <button  href="{% url 'listdoc' %}" class="btn btn-primary btn-block">
+          Guardar Cambios
+          </button>
       </article>
     </div>
     <!-- ============================ COMPONENT REGISTER END.// ================================= -->
@@ -54,22 +59,6 @@
 
     <!-- ========================= SECTION CONTENT END// ========================= -->
     {% endblock %}
-
-    <footer class="site-footer">
-    <div class="footer-inner bg-white">
-        <div class="row">
-            <div class="col-sm-6">
-                Copyright &copy; 2024 Marcelo Encabo
-            </div>
-            <div class="col-sm-6 text-right">
-                Designed by <a href="https://colorlib.com">MarceloCabo</a>
-            </div>
-        </div>
-    </div>
-</footer>
-<!-- /.site-footer -->
-</div>
-<!-- /#right-panel -->
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -83,3 +72,5 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="{% static 'js/main.js' %}"></script>
+
+{% include 'includes/footer.html' %}
