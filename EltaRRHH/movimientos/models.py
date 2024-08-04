@@ -31,7 +31,6 @@ class Movimientos(models.Model):
     permanencia = models.BooleanField(default=False)
     diasPermanencia = models.IntegerField(default=0)
     cruce_frontera = models.BooleanField(default=False)
-    #active = models.BooleanField(default=False)
     modif = models.DateTimeField(auto_now=True)
     comentarios = models.CharField(max_length=250, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)  # Fecha y hora de creación
@@ -69,7 +68,6 @@ class Movimientos(models.Model):
             raise ValidationError('No se puede modificar el campo lugar_inicio mientras haya un movimiento sin cerrar.')
     
     
-   
         # Verificar que haya un viaje activo
         viaje_activo = Viaje.objects.filter(chofer=self.chofer, activo=True).exists()
         if not viaje_activo:
