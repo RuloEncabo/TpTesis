@@ -40,6 +40,7 @@
 </head>
 {% block content %}
 <!-- ========================= SECTION CONTENT ========================= -->
+<br>
 <section class="section-conten padding-y bg">
     <div class="container">
         <div class="row">
@@ -81,7 +82,7 @@
                                                 {{ chofer.dias_curso_venc }}
                                             </td>
                                             <td>
-                                                <a href="#" class="btn btn-primary btn-circle btn-sm">
+                                                <a href=" {%  url 'modidoc'  %} " class="btn btn-primary btn-circle btn-sm">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
                                             </td>
@@ -101,20 +102,9 @@
     <!-- ========================= SECTION CONTENT END// ========================= -->
     {% endblock %}
 
-    <footer class="site-footer">
-    <div class="footer-inner bg-white">
-        <div class="row">
-            <div class="col-sm-6">
-                Copyright &copy; 2024 Marcelo Encabo
-            </div>
-            <div class="col-sm-6 text-right">
-                Designed by <a href="https://colorlib.com">MarceloCabo</a>
-            </div>
-        </div>
-    </div>
-</footer>
+
 <!-- /.site-footer -->
-</div>
+
 <!-- /#right-panel -->
 
 <!-- Scripts -->
