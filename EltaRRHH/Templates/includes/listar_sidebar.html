@@ -1,7 +1,7 @@
 <aside class="col-md-3">
     <!--   SIDEBAR   -->
     <ul class="list-group">
-        <a class="list-group-item {% if '/usuarios/' == request.path %} active {% endif %}" href="{% url 'listar' %}"> Usuario actual  </a>
+        <a class="list-group-item {% if '/usuarios/' == request.path %} active {% endif %}" href="{% url 'listar' %}"> Dashboard Usuarios </a>
         <a class="list-group-item {% if '/listusuario/' in request.path %} active {% endif %}"href="{% url 'listusuario' %}">Usuarios Activos </a>
         <a class="list-group-item {% if '/listchofer/' in request.path %} active {% endif %}"href="{% url 'listchofer' %}">Listado Choferes   </a>
         <a class="list-group-item {% if '/listdoc/' in request.path %} active {% endif %}"href="{% url 'listdoc' %}">Documentacion Choferes   </a>
