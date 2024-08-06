@@ -39,7 +39,6 @@ def registrarmovimiento(request):
                     permanencia=form.cleaned_data['permanencia'],
                     diasPermanencia=form.cleaned_data['diasPermanencia'],
                     cruce_frontera=form.cleaned_data['cruce_frontera'],
-                    active=form.cleaned_data['active'],
                     comentarios=form.cleaned_data['comentarios'],
                 )
                 
@@ -115,12 +114,15 @@ def listusuariochofer(request):
 ## Funciones para Graficos ###
 @login_required
 def analitica(request):
-    # Obtener los datos de kilómetros por mes
+   # Obtener los datos de kilómetros por mes
     datos_por_mes = Movimientos.objects.annotate(
         mes=TruncMonth('fin')
     ).values('mes').annotate(
         total_km=Sum('kmFin') - Sum('kmInicio')
     ).order_by('mes')
+
+    # Filtrar los datos que no tienen 'mes' como None
+    datos_por_mes = [dato for dato in datos_por_mes if dato['mes'] is not None]
 
     labels_meses = [dato['mes'].strftime('%Y-%m') for dato in datos_por_mes]
     series_meses = [dato['total_km'] for dato in datos_por_mes]
