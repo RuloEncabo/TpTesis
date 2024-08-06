@@ -10,23 +10,30 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
-<link rel="stylesheet" href="./">
 <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}">
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
-<link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
 
-<link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<!-- DataTables JS -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js"></script>
 
 <style>
     .table-custom-small td, .table-custom-small th {
-            font-size: 0.8rem; /* Ajusta este valor según sea necesario */
+        font-size: 0.8rem; /* Ajusta este valor según sea necesario */
     }
 </style>
 </head>
+
 {% block content %}
 <br>
 <!-- ========================= SECTION CONTENT ========================= -->
@@ -42,34 +49,30 @@
                     <div class="card-body">
                         <div class="row"> 
                             <div class="col-md-12">
-                            
-                                    <table class="table table-striped table-hover table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" class="text-sm">Nombre</th>
-                                                <th scope="col" class="text-sm">DNI</th>
-                                                <th scope="col" class="text-sm">FCA</th>
-                                                <th scope="col" class="text-sm">Licencia </th>
-                                                <th scope="col" class="text-sm">Psicofísico </th>
-                                                <th scope="col" class="text-sm">Curso </th>
-                                                
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for chofer in choferes %}
-                                            <tr>
-                                                                                                
-                                                <td class="text-dark text-sm">{{ chofer.full_name }}</td>
-                                                <td class="text-dark text-sm">{{ chofer.dni }}</td>
-                                                <td class="text-dark text-sm">{{ chofer.direccion }}</td>
-                                                <td class="text-dark text-sm">{{ chofer.dias_licencia_venc }}</td>
-                                                <td class="text-dark text-sm">{{ chofer.dias_psicofisico_venc }}</td>
-                                                <td class="text-dark text-sm">{{ chofer.dias_curso_venc }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                
+                                <table id="example" class="table table-striped table-hover table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="text-sm">Nombre</th>
+                                            <th scope="col" class="text-sm">DNI</th>
+                                            <th scope="col" class="text-sm">FCA</th>
+                                            <th scope="col" class="text-sm">Licencia</th>
+                                            <th scope="col" class="text-sm">Psicofísico</th>
+                                            <th scope="col" class="text-sm">Curso</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for chofer in choferes %}
+                                        <tr>
+                                            <td class="text-dark text-sm">{{ chofer.full_name }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.dni }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.direccion }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.dias_licencia_venc }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.dias_psicofisico_venc }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.dias_curso_venc }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -78,8 +81,8 @@
         </div>
     </div>
 </section>
-    <!-- ========================= SECTION CONTENT END// ========================= -->
-    {% endblock %}
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
@@ -87,5 +90,29 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
 <script src="{% static 'js/main.js' %}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#example').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Choferes Registrados'
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Choferes Registrados'
+            },
+            {
+                extend: 'print',
+                title: 'Choferes Registrados'
+            }
+        ],
+        "order": []
+    });
+});
+</script>
+
 <br>
 {% include 'includes/footer.html' %}
