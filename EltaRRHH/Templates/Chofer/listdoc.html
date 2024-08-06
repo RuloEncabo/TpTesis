@@ -81,7 +81,7 @@
                                     <tbody>
                                         {% for chofer in choferes %}
                                         <tr>
-                                            <td class="text-dark text-sm">{{ chofer.full_name }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.Id_chofer }}</td>
                                             <td class="{% if chofer.dias_ingresoFCA_venc > 60 %}text-success{% elif chofer.dias_ingresoFCA_venc >= 30 %}text-warning{% else %}text-danger{% endif %}">
                                                 {{ chofer.dias_ingresoFCA_venc }}
                                             </td>
@@ -95,7 +95,7 @@
                                                 {{ chofer.dias_curso_venc }}
                                             </td>
                                             <td>
-                                                <a href=" {%  url 'modidoc'  %} " class="btn btn-primary btn-circle btn-sm">
+                                                <a href="{% url 'modidoc' chofer.Id_chofer %}" class="btn btn-primary btn-circle btn-sm">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
                                             </td>
@@ -136,7 +136,10 @@
 <script>
     $(document).ready(function() {
         $('#example').DataTable({
-            dom: 'Bfrtip',
+            "dom": 'Bfrtip',
+            "buttons": [
+                'excel', 'pdf', 'print'
+            ]
             buttons: [
                 {
                     extend: 'excelHtml5',
@@ -146,7 +149,7 @@
                 },
                 {
                     extend: 'pdfHtml5',
-                    text: 'Exportar a PDF',
+                    text: 'PDF',
                     className: 'dt-button-custom',
                     title: 'Vencimiento Documentación'
                 },
