@@ -10,19 +10,25 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
-<link rel="stylesheet" href="./">
 <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}">
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
-<link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+<<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
 
-<link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<!-- DataTables JS -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js"></script>
+
 <head>
 <style>
-
     .green {
         color: green;
     }
@@ -35,6 +41,14 @@
 
     .table-custom-small td, .table-custom-small th {
         font-size: 0.8rem; /* Ajusta este valor según sea necesario */
+    }
+    .dt-button-custom {
+        background-color: #007bff; /* Cambia el color de fondo */
+        color: white; /* Cambia el color del texto */
+        border: none; /* Elimina el borde */
+        padding: 5px 10px; /* Ajusta el padding */
+        margin: 2px; /* Ajusta el margen */
+        border-radius: 3px; /* Ajusta el radio de borde */
     }
 </style>
 </head>
@@ -53,7 +67,7 @@
                     <div class="card-body">
                         <div class="row"> 
                             <div class="col-md-12">
-                                <table class="table table-striped table-hover table-sm">
+                                <table id="example" class="table table-striped table-hover table-sm">
                                     <thead>
                                         <tr>
                                             <th scope="col" class="text-sm">Nombre</th>
@@ -68,7 +82,6 @@
                                         {% for chofer in choferes %}
                                         <tr>
                                             <td class="text-dark text-sm">{{ chofer.full_name }}</td>
-
                                             <td class="{% if chofer.dias_ingresoFCA_venc > 60 %}text-success{% elif chofer.dias_ingresoFCA_venc >= 30 %}text-warning{% else %}text-danger{% endif %}">
                                                 {{ chofer.dias_ingresoFCA_venc }}
                                             </td>
@@ -99,20 +112,78 @@
     </div>
 </section>
 
-    <!-- ========================= SECTION CONTENT END// ========================= -->
-    {% endblock %}
-
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}
 
 <!-- /.site-footer -->
 
 <!-- /#right-panel -->
 
 <!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
 <script src="{% static 'js/main.js' %}"></script>
+
+<!-- DataTables JS -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: 'Excel',
+                    className: 'dt-button-custom',
+                    title: 'Vencimiento Documentación'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'Exportar a PDF',
+                    className: 'dt-button-custom',
+                    title: 'Vencimiento Documentación'
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimir',
+                    className: 'dt-button-custom',
+                    title: 'Vencimiento Documentación'
+                }
+            ],
+            "order": [],
+            language: {
+                "decimal": "",
+                "emptyTable": "No hay datos disponibles en la tabla",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros en total)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Mostrar _MENU_ registros",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscar:",
+                "zeroRecords": "No se encontraron registros coincidentes",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                "aria": {
+                    "sortAscending": ": activar para ordenar la columna ascendente",
+                    "sortDescending": ": activar para ordenar la columna descendente"
+                }
+            }
+        });
+    });
+</script>
+
+{% include 'includes/footer.html' %}
