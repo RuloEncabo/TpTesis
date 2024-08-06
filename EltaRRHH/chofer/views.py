@@ -39,9 +39,8 @@ def listdoc(request):
 
 
 ###  Funcion para modificar los Vencimientos ###
-def modidoc(request):
-    Id = 2
-    chofer = get_object_or_404(Chofer, Id_chofer=Id)
+def modidoc(request, chofer_id):
+    chofer = get_object_or_404(Chofer, Id_chofer=chofer_id)
 
     if request.method == 'POST':
         form = ChoferForm(request.POST, instance=chofer)
@@ -52,7 +51,6 @@ def modidoc(request):
         form = ChoferForm(instance=chofer)
 
     return render(request, 'chofer/modidoc.html', {'form': form, 'chofer': chofer})
-
 """
 def registro_chofer(request):
     if request.method == 'POST':
