@@ -56,6 +56,9 @@ def registrarmovimiento(request):
 ### Lista los campos del Chofer ###
 def listmovimiento(request):
     movimientos = Movimientos.objects.all()
+     # Calcular la diferencia entre kmInicio y kmFin para cada movimiento
+    for movimiento in movimientos:
+        movimiento.km_difference = (movimiento.kmFin or 0) - movimiento.kmInicio
     context = {
         'movimientos': movimientos,
     }
