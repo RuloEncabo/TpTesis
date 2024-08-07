@@ -32,3 +32,17 @@ class ChoferForm(forms.ModelForm):
             'psicofisico_venc': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'curso_venc': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
+        
+        
+class ChoferVencimientoForm(forms.ModelForm):
+    class Meta:
+        model = Chofer
+        fields = ['ingresoFCA_venc', 'licencia_venc', 'psicofisico_venc', 'curso_venc']
+        widgets = {
+            'ingresoFCA_venc': forms.DateInput(attrs={'class': 'form-control'}),
+            'licencia_venc': forms.DateInput(attrs={'class': 'form-control'}),
+            'psicofisico_venc': forms.DateInput(attrs={'class': 'form-control'}),
+            'curso_venc': forms.DateInput(attrs={'class': 'form-control'}),
+        }
+        
+    
