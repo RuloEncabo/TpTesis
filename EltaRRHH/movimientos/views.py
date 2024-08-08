@@ -53,6 +53,55 @@ def registrarmovimiento(request):
 
     return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
 
+
+### Solo registra el Chofer ###
+@login_required
+def registrarmovimientoc(request):
+    if request.method == 'POST':
+        form = MovimientosForm(request.POST)
+        if form.is_valid():
+            try:
+                usuario = request.user
+
+                # Verificar si el usuario es un chofer
+                try:
+                    chofer = Chofer.objects.get(usuario=usuario)
+                except Chofer.DoesNotExist:
+                    chofer = None
+
+                # Crear el movimiento
+                Movimientos.objects.create(
+                    usuario_id=usuario,  # Usuario actual
+                    chofer=chofer,  # Puede ser None si el usuario no es un chofer
+                    nFlota=form.cleaned_data['nFlota'],
+                    inicio=form.cleaned_data['inicio'],
+                    fin=form.cleaned_data['fin'],
+                    kmInicio=form.cleaned_data['kmInicio'],
+                    kmFin=form.cleaned_data['kmFin'],
+                    lugar_inicio=form.cleaned_data['lugar_inicio'],
+                    lugar_fin=form.cleaned_data['lugar_fin'],
+                    tipo_kilometro=form.cleaned_data['tipo_kilometro'],
+                    lleva_carga=form.cleaned_data['lleva_carga'],
+                    permanencia=form.cleaned_data['permanencia'],
+                    diasPermanencia=form.cleaned_data['diasPermanencia'],
+                    cruce_frontera=form.cleaned_data['cruce_frontera'],
+                    comentarios=form.cleaned_data['comentarios'],
+                )
+                
+                messages.success(request, 'Movimiento registrado exitosamente.')
+                return redirect('listmovimiento')
+            except Exception as e:
+                messages.error(request, f'Error inesperado: {str(e)}')
+        else:
+            messages.error(request, 'Formulario inválido. Por favor, revisa los datos ingresados.')
+    else:
+        form = MovimientosForm()
+
+    return render(request, 'movimientos/registrarmovimientoc.html', {'form': form})
+
+
+
+
 ### Lista los campos del Chofer ###
 def listmovimiento(request):
     movimientos = Movimientos.objects.all()
