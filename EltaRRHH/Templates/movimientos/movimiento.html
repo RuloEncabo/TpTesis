@@ -38,27 +38,27 @@
                         <span>{{ user.first_name }}</span>
                     </header>
                     <div class="card-body">
-                        <div class="row justify-content-center"> 
+                        
+                        <div class="row mt-4">
 
-                            <!-- Card 0 (centrado) -->
+                            <!-- Card 1 -->
                             <div class="col-md-3">
                                 <div class="card border border-secondary text-center">
                                     <div class="card-header">
                                         <div class="text-muted text-right mb-1">
-                                            <i class="fa fa-bar-chart-o"></i>
+                                            <i class="fa fa-user-plus"></i>
                                         </div>
                                         <strong class="card-title text-primary" > Km Registrados </strong>
                                     </div>
-                                    <div class="card-body">
-                                        
+                                    <div class="card-body">                                        
                                         <h4> <span class="count"> {{ total_km|default:0|floatformat:2 }} </span></h4>
                                         <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
                                     </div>
                                 </div>
                             </div>
-                        </div> <!-- row.// -->
-                        <div class="row mt-4">
-                            <!-- Card 1 -->
+
+
+                            <!-- Card 2 -->
                             <div class="col-md-3">
                                 <div class="card border border-secondary text-center">
                                     <div class="card-header">
@@ -75,7 +75,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Card 2 -->
+                            <!-- Card 3 -->
                             <div class="col-md-3">
                                 <div class="card border border-secondary text-center">
                                     <div class="card-header">
