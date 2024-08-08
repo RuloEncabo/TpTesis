@@ -116,7 +116,7 @@ def listusuariochofer(request):
 
 ## Funciones para Graficos ###
 @login_required
-def analitica(request):
+def kpi(request):
    # Obtener los datos de kilómetros por mes
     datos_por_mes = Movimientos.objects.annotate(
         mes=TruncMonth('fin')
