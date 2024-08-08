@@ -54,7 +54,7 @@ def registrarmovimiento(request):
     return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
 
 
-### Solo registra el Chofer ###
+### Solo registra elChofer ###
 @login_required
 def registrarmovimientoc(request):
     if request.method == 'POST':
@@ -134,6 +134,28 @@ def listmovimientoChofer(request):
     return render(request, 'movimientos/list_mov_chofer.html', context)
 
 def movimiento(request):
+    # Total de kilómetros realizados
+    total_km = Movimientos.objects.aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
+    
+    # Total de movimientos
+    total_movimientos = Movimientos.objects.count()
+
+    # Total de choferes que realizaron registros
+    total_choferes = Movimientos.objects.values('chofer').distinct().count()
+    
+    # Total de registros realizados por chofer
+    registros_por_chofer = Movimientos.objects.values('chofer').annotate(total_registros=Count('mov_id')).order_by('-total_registros')
+    
+    context = {
+        'total_km': total_km,
+        'total_choferes': total_choferes,
+        'registros_por_chofer': registros_por_chofer,
+        'total_movimientos': total_movimientos,
+    }
+    return render(request, 'movimientos/movimiento.html', context)
+
+### Funcion para determinar moviento por Chofer ###
+def movimientoc(request):
     # Total de kilómetros realizados
     total_km = Movimientos.objects.aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
     
