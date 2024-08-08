@@ -1,5 +1,7 @@
 import email
+from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .forms import RegistroForm
 from .models import Usuario, UsuarioChofer
@@ -178,3 +180,24 @@ def listusuariochofer(request):
         'chofer': chofer,
     }
     return render(request, 'usuarios/listusuariochofer.html', context)
+
+
+### Eliminar Usuario ###
+@csrf_exempt
+def delete_usuario(request):
+    if request.method == 'POST':
+        usuario_id = request.POST.get('id')
+        usuario_role = request.POST.get('role')
+        try:
+            usuario = Usuario.objects.get(id=usuario_id)
+            usuario.delete()
+
+            # Si es chofer, eliminar también el registro asociado
+            if usuario_role == 'chofer':
+                chofer = Chofer.objects.get(usuario=usuario)
+                chofer.delete()
+
+            return JsonResponse({'success': True})
+        except Usuario.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Usuario no encontrado'})
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
