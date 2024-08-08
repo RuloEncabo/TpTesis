@@ -14,6 +14,6 @@ urlpatterns = [
     path('listusuariochofer/', views.listusuariochofer, name='listusuariochofer'),
     path('', views.home, name='home'),
     path('activate/<uidb64>/<token>', views.activate, name='activate'), # ruta para la funcion activate con los parametros  
-    
+    path('delete_usuario/', views.delete_usuario, name='delete_usuario'),
     
 ]
