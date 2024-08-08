@@ -1,0 +1,12 @@
+<aside class="col-md-3">
+    <!--   SIDEBAR   -->
+    <ul class="list-group">
+        <a class="list-group-item {% if '/movimientos/' == request.path %} active {% endif %}" href="{% url 'movimiento' %}"> Movimientos </a>
+        <a class="list-group-item {% if '/registrarmovimiento/' in request.path %} active {% endif %}"href="{% url 'registrarmovimiento' %}"> Registar Moviemientos </a>
+        <a class="list-group-item {% if '/listmovimiento/' in request.path %} active {% endif %}"href="{% url 'listmovimiento' %}"> Movimientos Registrados </a>
+        <a class="list-group-item {% if '/listmovimientoChofer/' in request.path %} active {% endif %}"href="{% url 'listmovimientoChofer' %}">Movimiento Chofer </a>
+    </ul>
+    <br>
+    <a class="btn btn-light btn-block" href="{% url 'logout' %}"> <i class="fa fa-power-off"></i> <span class="text">Salir de sesion</span> </a> 
+    <!--   SIDEBAR .//END   -->
+</aside>
