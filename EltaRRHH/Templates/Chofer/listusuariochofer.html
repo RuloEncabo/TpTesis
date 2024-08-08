@@ -71,10 +71,11 @@
                                         <tr>
                                             <th scope="col" class="text-sm">Nombre</th>
                                             <th scope="col" class="text-sm">DNI</th>
-                                            <th scope="col" class="text-sm">FCA</th>
-                                            <th scope="col" class="text-sm">Licencia</th>
-                                            <th scope="col" class="text-sm">Psicofísico</th>
-                                            <th scope="col" class="text-sm">Curso</th>
+                                            <th scope="col" class="text-sm">Direccion</th>
+                                            <th scope="col" class="text-sm">Localidad</th>
+                                            <th scope="col" class="text-sm">Provincia</th>
+                                            <th scope="col" class="text-sm">Movil</th>
+                                            <th scope="col" class="text-sm">Acciones</th> <!-- Nueva columna para botones -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -83,9 +84,16 @@
                                             <td class="text-dark text-sm">{{ chofer.full_name }}</td>
                                             <td class="text-dark text-sm">{{ chofer.dni }}</td>
                                             <td class="text-dark text-sm">{{ chofer.direccion }}</td>
-                                            <td class="text-dark text-sm">{{ chofer.dias_licencia_venc }}</td>
-                                            <td class="text-dark text-sm">{{ chofer.dias_psicofisico_venc }}</td>
-                                            <td class="text-dark text-sm">{{ chofer.dias_curso_venc }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.localidad }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.provincia }}</td>
+                                            <td class="text-dark text-sm">{{ chofer.movil }}</td>
+                                            <td class="text-dark text-sm">
+                        
+                                                    <a href="{% url 'editarchofer' chofer.Id_chofer %}" class="btn btn-primary edit-btn">
+                                                        Modificar
+                                                    </a>
+                                            
+                                            </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -110,7 +118,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#example').DataTable({
+        var table = $('#example').DataTable({
             dom: 'Bfrtip',
             buttons: [
                 {
@@ -157,6 +165,16 @@
                     "sortDescending": ": activar para ordenar la columna descendente"
                 }
             }
+        });
+
+        // Manejador para el botón "Modificar"
+        $('#example').on('click', '.edit-btn', function() {
+            var choferId = $(this).data('id');
+            // Redirigir a la página de edición o abrir un modal
+            window.location.href = 'modichofer' + choferId;
+            // Alternativamente, puedes abrir un modal:
+            // $('#editModal').modal('show');
+            // Cargar datos del chofer en el modal usando AJAX o similar.
         });
     });
 </script>
