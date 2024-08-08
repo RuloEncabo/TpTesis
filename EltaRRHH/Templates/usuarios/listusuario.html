@@ -10,26 +10,29 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
-<link rel="stylesheet" href="./">
 <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}">
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
-<link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 
-<link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 
 <style>
     .table-custom-small td, .table-custom-small th {
-            font-size: 0.8rem; /* Ajusta este valor según sea necesario */
+        font-size: 0.8rem; /* Ajusta este valor según sea necesario */
+    }
+    .filter-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 </style>
 </head>
 {% block content %}
 <!-- ========================= SECTION CONTENT ========================= -->
- <br>
+<br>
 <section class="section-conten padding-y bg">
     <div class="container">
         <div class="row">
@@ -37,19 +40,19 @@
             <main class="col-md-9">
                 <article class="card">
                     <header class="card-header">
-                        <strong class="d-inline-block mr-4"> Usuarios Registrados </strong>
+                        <strong class="d-inline-block mr-4">Usuarios Registrados</strong>
                     </header>
                     <div class="card-body">
                         <div class="row"> 
                             <div class="col-md-12">
-                            
-                                    <table class="table table-striped table-hover table-sm">
+                                <div class="table-responsive">
+                                    <table id="usuarios-table" class="table table-striped table-hover table-sm">
                                         <thead>
                                             <tr>
                                                 <th scope="col" class="text-sm">Nombre</th>
                                                 <th scope="col" class="text-sm">E-Mail</th>
                                                 <th scope="col" class="text-sm">Perfil</th>
-                                                
+                                                <th scope="col" class="text-sm"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -58,12 +61,14 @@
                                                 <td class="text-dark text-sm">{{ usuario.full_name}}</td>
                                                 <td class="text-sm">{{ usuario.email }}</td>
                                                 <td class="text-sm">{{ usuario.role }}</td>
-                                            
+                                                <td>
+                                                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ usuario.id }}" data-role="{{ usuario.role }}">Borrar</button>
+                                                </td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
                                     </table>
-                                
+                                </div>    
                             </div>
                         </div>
                     </div>
@@ -72,14 +77,62 @@
         </div>
     </div>
 </section>
-    <!-- ========================= SECTION CONTENT END// ========================= -->
-    {% endblock %}
-
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
-<script src="{% static 'js/main.js' %}"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/i18n/jquery.ui.datepicker-es.min.js"></script>
+
 {% include 'includes/footer.html' %}
+
+
+<script>
+    $(document).ready(function() {
+        var table = $('#usuarios-table').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/Spanish.json"
+            },
+            "dom": 'Bfrtip',
+            "buttons": [
+                'excel', 'pdf', 'print'
+            ]
+        });
+
+        $('#usuarios-table').on('click', '.delete-btn', function() {
+            var usuarioId = $(this).data('id');
+            var usuarioRole = $(this).data('role');
+            if (confirm('¿Estás seguro de que deseas borrar este usuario?')) {
+                // Realiza una solicitud AJAX para borrar el usuario
+                $.ajax({
+                    url: '{% url "delete_usuario" %}',  // Asegúrate de tener una URL configurada para borrar el usuario
+                    method: 'POST',
+                    data: {
+                        'id': usuarioId,
+                        'role': usuarioRole,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Refresca la tabla completa
+                            table.ajax.reload(null, false); // false = no reinicia la paginación
+                        } else {
+                            alert('Error al borrar el usuario.');
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
