@@ -38,4 +38,4 @@ class Chofer(models.Model):
         return f'{self.nombre} {self.apellido}'
     
     def direccion(self):
-        return f'{self.calle}{self.nrocalle} {self.piso} {self.barrio}'
+        return f'{self.calle} {self.nrocalle}'
