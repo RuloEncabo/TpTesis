@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('registrarmovimiento/', views.registrarmovimiento, name='registrarmovimiento'),
+    path('registrarmovimientoc/', views.registrarmovimientoc, name='registrarmovimientoc'),
     path('listmovimiento/', views.listmovimiento, name='listmovimiento'),
     path('movimiento/', views.movimiento, name='movimiento'),
     path('listmovimientoChofer/', views.listmovimientoChofer, name='listmovimientoChofer'),
