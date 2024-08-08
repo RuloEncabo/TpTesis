@@ -44,5 +44,17 @@ class ChoferVencimientoForm(forms.ModelForm):
             'psicofisico_venc': forms.DateInput(attrs={'class': 'form-control'}),
             'curso_venc': forms.DateInput(attrs={'class': 'form-control'}),
         }
-        
+
+class ChofermodiForm(forms.ModelForm):
+    class Meta:
+        model = Chofer
+        fields = ['nombre', 'apellido', 'dni', 'calle','nrocalle','movil']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre', 'class': 'form-control'}),
+            'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido', 'class': 'form-control'}),
+            'dni': forms.TextInput(attrs={'placeholder': 'Ingrese DNI', 'class': 'form-control'}),
+            'calle': forms.TextInput(attrs={'placeholder': 'Ingrese Calle', 'class': 'form-control'}),
+            'nrocalle': forms.TextInput(attrs={'placeholder': 'Ingrese Número de Calle', 'class': 'form-control'}),
+            'movil': forms.TextInput(attrs={'placeholder': 'Ingrese Móvil', 'class': 'form-control'}),
+        } 
     
