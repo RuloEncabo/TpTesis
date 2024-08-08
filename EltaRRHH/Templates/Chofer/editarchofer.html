@@ -1,0 +1,104 @@
+{% load static %}
+{% include 'includes/nav.html' %}
+
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<br>
+<br>
+<section class="section-content padding-y">
+    <!-- ============================ COMPONENT REGISTER ================================= -->
+    <div class="card mx-auto" style="max-width: 520px; margin-top: 40px">
+    <article class="card-body">
+
+        {% include 'includes/alerts.html' %}
+
+        <header class="mb-4"><h4 class="card-title">Modificar datos del chofer</h4></header>
+        <form action="{% url 'editarchofer' chofer.Id_chofer %}" method="POST">
+            {% csrf_token %}
+
+            <!-- Bloque de campos del formulario -->
+            <div class="form-row">
+                <div class="col form-group">
+                    <label>Nombre</label>
+                    {{ form.nombre }}
+                    <div class="text-danger">
+                        {% for error in form.nombre.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col form-group">
+                    <label>Apellido</label>
+                    {{ form.apellido }}
+                    <div class="text-danger">
+                        {% for error in form.apellido.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col form-group">
+                    <label>DNI</label>
+                    {{ form.dni }}
+                    <div class="text-danger">
+                        {% for error in form.dni.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col form-group">
+                    <label>Móvil</label>
+                    {{ form.movil }}
+                    <div class="text-danger">
+                        {% for error in form.movil.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col form-group">
+                    <label>Calle</label>
+                    {{ form.calle }}
+                    <div class="text-danger">
+                        {% for error in form.calle.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col form-group">
+                    <label>Número de Calle</label>
+                    {{ form.nrocalle }}
+                    <div class="text-danger">
+                        {% for error in form.nrocalle.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón para guardar los cambios -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">
+                    Guardar Cambios
+                </button>
+            </div>
+            {{ form.non_field_errors }}
+        </form>
+      </article>
+    </div>
+    <!-- ============================ COMPONENT REGISTER END.// ================================= -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+{% include 'includes/footer.html' %}
