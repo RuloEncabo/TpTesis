@@ -42,30 +42,24 @@
                         <a href="home.html"><i class="menu-icon fa fa-truck"></i>Recursos Hurmanos </a>
                     </li>
                         <li class="menu-title">Administacion RRHH</li><!-- /.menu-title -->
-                    
+                        <!--
                             <li class="menu-item-has-children dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i> Usuarios </a>
                                 <ul class="sub-menu children dropdown-menu">
                                 <li><i class="fa fa-user-plus"></i><a href="{%  url 'registro'  %}"> Crear Usuario</a></li>
                                 <li><i class="fa fa-users"></i><a href="{%  url 'login'  %}"> Login</a></li>
+                                            
+
                 </ul>
+                            </li>-->
+                            <li>
+                                <a href=" {%  url 'registro'  %} "> <i class="menu-icon fa fa-users"></i> Crear Usuario </a>
                             </li>
+
                             <li>
                                 <a href=" {%  url 'listar'  %} "> <i class="menu-icon fa fa-users"></i> Chofer </a>
                             </li>
-        <!--
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Alta Chofer</a>
-                        <ul class="sub-menu children dropdown-menu">                           
-                            <li><i class="fa fa fa-user-plus"></i><a href="{%  url 'listar'  %}">Alta</a></li>
-                            <li><i class="fa fa-id-badge"></i><a href="ui-tabs.html">Modificar</a></li>
-                            <li><i class="fa fa-ban"></i><a href="ui-cards.html">Borrar</a></li>
-                            
-                        </ul>
-                    </li>
-
-                    <li class="menu-title">Chofer</li><!-- /.menu-title -->
-
+    
                     <li>
                         <a href="{% url 'movimiento' %}"> <i class="menu-icon fa fa-road"></i> Movimientos </a>
                     </li>
@@ -160,25 +154,10 @@
             </div>
             <!-- .animated -->
         </div>
-        <!-- /.content -->
-        <div class="clearfix"></div>
-        <!-- Footer -->
-        <footer class="site-footer">
-            <div class="footer-inner bg-white">
-                <div class="row">
-                    <div class="col-sm-6">
-                        Copyright &copy; 2024 Marcelo Encabo
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        Designed by <a href="https://colorlib.com">MarceloCabo</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- /.site-footer -->
-    </div>
+     
+      
     <!-- /#right-panel -->
-
+    {% include 'includes/footer.html' %}
     <!-- Scripts -->
     <script type="text/javascript">  
         $(document).ready(funtion() {      
