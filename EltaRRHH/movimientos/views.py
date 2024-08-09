@@ -90,7 +90,7 @@ def registrarmovimientoc(request):
                 )
                 
                 messages.success(request, 'Movimiento registrado exitosamente.')
-                return redirect('listmovimiento')
+                return redirect('movimientoc')
             except Exception as e:
                 messages.error(request, f'Error inesperado: {str(e)}')
         else:
@@ -99,9 +99,6 @@ def registrarmovimientoc(request):
         form = MovimientosForm()
 
     return render(request, 'movimientos/registrarmovimientoc.html', {'form': form})
-
-
-
 
 ### Lista los campos del Chofer ###
 def listmovimiento(request):
@@ -134,6 +131,30 @@ def listmovimientoChofer(request):
     }
     return render(request, 'movimientos/list_mov_chofer.html', context)
 
+### Muestra Resumen Choferes en sesion ###
+def movchofer(request):
+    # Obtener el chofer asociado al usuario autenticado
+    chofer = request.user.chofer
+
+    # Total de kilómetros realizados por el chofer
+    total_km = Movimientos.objects.filter(chofer=chofer).aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
+    
+    # Total de movimientos realizados por el chofer
+    total_movimientos = Movimientos.objects.filter(chofer=chofer).count()
+
+    # Total de registros realizados por el chofer
+    registros_por_chofer = Movimientos.objects.filter(chofer=chofer).values('chofer').annotate(total_registros=Count('mov_id')).order_by('-total_registros')
+    
+    context = {
+        'total_km': total_km,
+        'total_choferes': 1,  # Solo se considera el chofer logueado
+        'registros_por_chofer': registros_por_chofer,
+        'total_movimientos': total_movimientos,
+    }
+    return render(request, 'movimientos/movchofer.html', context)
+
+
+### Muestra Resumen de todos los Choferes ###
 def movimiento(request):
     # Total de kilómetros realizados
     total_km = Movimientos.objects.aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
