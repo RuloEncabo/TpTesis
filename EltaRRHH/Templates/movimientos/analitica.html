@@ -39,7 +39,7 @@
                                 
                                 <div class="card border border-secondary text-center">
                                     <div class="card-header">
-                                        <strong class="card-title text-primary" > Km Chofer </strong>
+                                        <strong class="card-title text-primary" > Km Mes </strong>
                                     </div>
                                     <div class="card-body">
                                         <canvas id="barChartM"></canvas> 
@@ -63,15 +63,15 @@
 
                             <div class="col-md-6">
                                 <pre>
-                                    Labels: {{ labels_meses }}
-                                    Series: {{ series_meses }}
+                                    Labels: {{ labels_km_tipos }}
+                                    Series: {{ series_km_tipos }}
                                 </pre>
                                 <div class="card border border-secondary text-center">
                                     <div class="card-header">
-                                        <strong class="card-title text-primary" > Tipo Usuario </strong>
+                                        <strong class="card-title text-primary" > Tipo KM </strong>
                                     </div>
                                     <div class="card-body">
-                                        <canvas id="tipo"></canvas> 
+                                            <canvas id="lineChart"></canvas> 
                                     </div>
                                 </div>
                             </div>
@@ -104,7 +104,10 @@
         const seriesMeses = {{ series_meses|safe }};
 
         const labelsTipo = {{ labels_tipo|safe }};
-        const seriesTipo = {{ series_tipo|safe }};      
+        const seriesTipo = {{ series_tipo|safe }};   
+        
+        const labelsKmTipos = {{ labels_km_tipos|safe }};
+        const seriesKmTipos = {{ series_km_tipos|safe }};
         
         //Km por chofer
         const ctx = document.getElementById("barChartC").getContext('2d');
@@ -174,6 +177,34 @@
                 title: {
                     display: true,
                     text: 'Usuarios por Rol'
+                }
+            }
+        });
+
+        // Grafico tipo KM 
+        var ctxKm = document.getElementById('lineChart').getContext('2d');
+        var chart = new Chart(ctxKm, {
+            type: 'bar',  // Gráfico de líneas
+            data: {
+                labels: labelsKmTipos,  // Etiquetas de los tipos de kilómetros
+                datasets: [{
+                    label: 'Kilómetros Registrados',
+                    data: seriesKmTipos,  // Datos de la sumatoria de kilómetros
+                    borderColor: '#36A2EB',  // Color de la línea
+                    fill: false,  // No llenar el área bajo la línea
+                    tension: 0.1  // Suavizado de la línea
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Kilómetros Registrados por Tipo en el Último Mes'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
         });
