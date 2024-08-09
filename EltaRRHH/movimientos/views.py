@@ -1,3 +1,4 @@
+import datetime
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -188,7 +189,23 @@ def listusuariochofer(request):
 ## Funciones para Graficos ###
 @login_required
 def kpi(request):
-   # Obtener los datos de kilómetros por mes
+    # Obtener el mes actual y el mes anterior
+    fecha_actual = datetime.date.today()
+    mes_actual = fecha_actual.month
+    anio_actual = fecha_actual.year
+    
+    # Obtener los datos de tipos de kilómetros registrados en el último mes
+    datos_km_tipos = Movimientos.objects.filter(
+        fin__year=anio_actual,
+        fin__month=mes_actual
+    ).values('tipo_kilometro__descripcion').annotate(
+        total_km=Sum('kmFin') - Sum('kmInicio')
+    ).order_by('tipo_kilometro__descripcion')
+
+    labels_km_tipos = [dato['tipo_kilometro__descripcion'] for dato in datos_km_tipos]
+    series_km_tipos = [dato['total_km'] for dato in datos_km_tipos]
+
+    # Obtener los datos de kilómetros por mes
     datos_por_mes = Movimientos.objects.annotate(
         mes=TruncMonth('fin')
     ).values('mes').annotate(
@@ -233,7 +250,9 @@ def kpi(request):
         'labels_meses': labels_meses,
         'series_meses': series_meses,
         'labels_tipo': labels_tipo,
-        'series_tipo': series_tipo
+        'series_tipo': series_tipo,
+        'labels_km_tipos':labels_km_tipos,
+        'series_km_tipos':series_km_tipos
     }
     return render(request, 'movimientos/analitica.html', context)
     
