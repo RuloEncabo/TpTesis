@@ -32,7 +32,10 @@
             <div class="card mx-auto" style="max-width: 380px; margin-top: 40px;">
                 {% include 'includes/alerts.html' %}
                 <div class="card-body">
-                    <h4 class="card-title mb-4 text-center"><i class="fa fa-hand-paper-o"></i> Login</h4>
+                    <h4 class="card-title mb-4 text-center" style="font-size: 2rem; color: #007bff;">
+                        <i class="fa fa-hand-paper-o" style="color: #28a745; margin-right: 10px;"></i> 
+                        <span style="font-weight: bold;">Hola!</span>
+                    </h4>
                     <form action="{% url 'login' %}" method="POST">
                         {% csrf_token %}
 
