@@ -1,4 +1,3 @@
-import email
 from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 from django.http import JsonResponse
@@ -14,6 +13,9 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
+from django.conf import settings
+from django.core.mail import send_mail
+
 
 
 @login_required(login_url='login')
@@ -106,6 +108,30 @@ def registro(request):
     
     return render(request, 'usuarios/registro.html', {'form': form})
 
+### Funcion para reestablecer la contraseña ###
+def sol_reset_pass(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        try:
+            user = Usuario.objects.get(email=email)
+            current_site = get_current_site(request)
+            mail_subject = 'Restablece tu contraseña en ELTA'
+            body = render_to_string('usuarios/resetpass.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            to_email = email
+            send_email = EmailMessage(mail_subject, body, to=[to_email])
+            send_email.send()
+
+            messages.success(request, 'Te hemos enviado un correo con las instrucciones para restablecer tu contraseña.')
+            return redirect('login')
+        except Usuario.DoesNotExist:
+            messages.error(request, 'No existe una cuenta asociada a ese correo electrónico.')
+            return redirect('sol_reset_pass')
+    return render(request, 'usuarios/sol_reset_pass.html')
 
 ### Funcion para Login ###
 def login(request):
@@ -134,16 +160,23 @@ def login(request):
     
     return render(request, 'usuarios/login.html')
 
-#####
-@login_required(login_url='login')
-def logout(request):
-    
-    auth.logout(request)
-    messages.success(request, 'Sesion Cerrada')
-    
-    return redirect('login')
+### Funcion Pedido de Email desde login ###   
+def pedidocuenta(request):
+    if request.method == 'POST':
+        email_subject = "Solicitud de Cuenta"
+        email_body = "Hola RRHH, se ha solicitado la creación de una cuenta en el sistema."
+        send_mail(
+            email_subject,
+            email_body,
+            settings.DEFAULT_FROM_EMAIL,
+            ['activacionelta@gmail.com'],
+            fail_silently=False,
+        )
+        messages.success(request, 'Solicitud enviada a RRHH con éxito.')
+        return redirect('login')  # Redirigir a la página de inicio después del envío
+    return render(request, 'usuarios/pedidocuenta.html')  # Renderiza un formulario simple
 
-#FUNCION PARA ACTIVAR EL USUARIO
+### Funcion para activar el usuario ###
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -160,12 +193,23 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Tu Usuario NO se Activó !!!')
         return redirect('registro')
-####    
+
+### Funcion Logout ###
+@login_required(login_url='login')
+def logout(request):
+    
+    auth.logout(request)
+    messages.success(request, 'Sesion Cerrada')
+    
+    return redirect('login')
+
+
+
 @login_required(login_url='login')
 def listar(request):
     return render (request, 'usuarios/listar.html')
 
-####
+#### Funcion para listar todos los usuario ###
 def listusuario(request):
     usuarios = Usuario.objects.all().order_by('-date_joined')
     context = {
@@ -180,7 +224,6 @@ def listusuariochofer(request):
         'chofer': chofer,
     }
     return render(request, 'usuarios/listusuariochofer.html', context)
-
 
 ### Eliminar Usuario ###
 @csrf_exempt
