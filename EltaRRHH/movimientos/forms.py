@@ -30,3 +30,20 @@ class MovimientosForm(forms.ModelForm):
             'cruce_frontera': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'comentarios': forms.Textarea(attrs={'class': 'form-control'}),
         }
+        
+        
+class MovInicioForm(forms.ModelForm):
+    class Meta:
+        model = Movimientos
+        fields = [
+            'nFlota', 'inicio', 'fin', 'kmInicio', 'kmFin', 'lugar_inicio', 
+            'lleva_carga'
+        ]
+        widgets = {
+            'inicio': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'nFlota': forms.TextInput(attrs={'class': 'form-control'}),
+            'kmInicio': forms.NumberInput(attrs={'class': 'form-control'}),
+            'lugar_inicio': forms.TextInput(attrs={'class': 'form-control'}),
+            'tipo_kilometro': forms.Select(attrs={'class': 'form-control'}),
+            'lleva_carga': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
