@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import formats
 from .models import Movimientos, TipoKilometros
 
 
@@ -16,7 +17,12 @@ class MovimientosForm(forms.ModelForm):
             'diasPermanencia', 'cruce_frontera', 'comentarios'
         ]
         widgets = {
-            'inicio': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+                'inicio': forms.DateTimeInput(attrs={
+                'class': 'form-control',
+                'type': 'datetime-local',
+                'placeholder': 'dd/mm/yyyy hh:mm',  # Formato argentino
+            }),
+                
             'fin': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'nFlota': forms.TextInput(attrs={'class': 'form-control'}),
             'kmInicio': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -40,7 +46,11 @@ class MovInicioForm(forms.ModelForm):
             'lleva_carga'
         ]
         widgets = {
-            'inicio': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'inicio': forms.DateTimeInput(attrs={
+                'class': 'form-control',
+                'type': 'datetime-local',
+                'placeholder': 'dd/mm/yyyy hh:mm',  # Formato argentino
+            }),
             'nFlota': forms.TextInput(attrs={'class': 'form-control'}),
             'kmInicio': forms.NumberInput(attrs={'class': 'form-control'}),
             'lugar_inicio': forms.TextInput(attrs={'class': 'form-control'}),
