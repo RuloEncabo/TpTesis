@@ -1,5 +1,4 @@
 from django import forms
-from django.utils import formats
 from .models import Movimientos, TipoKilometros
 
 
@@ -17,12 +16,7 @@ class MovimientosForm(forms.ModelForm):
             'diasPermanencia', 'cruce_frontera', 'comentarios'
         ]
         widgets = {
-                'inicio': forms.DateTimeInput(attrs={
-                'class': 'form-control',
-                'type': 'datetime-local',
-                'placeholder': 'dd/mm/yyyy hh:mm',  # Formato argentino
-            }),
-                
+            'inicio': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'fin': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'nFlota': forms.TextInput(attrs={'class': 'form-control'}),
             'kmInicio': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -31,49 +25,6 @@ class MovimientosForm(forms.ModelForm):
             'lugar_fin': forms.TextInput(attrs={'class': 'form-control'}),
             'tipo_kilometro': forms.Select(attrs={'class': 'form-control'}),
             'lleva_carga': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'permanencia': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'diasPermanencia': forms.NumberInput(attrs={'class': 'form-control'}),
-            'cruce_frontera': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'comentarios': forms.Textarea(attrs={'class': 'form-control'}),
-        }
-        
-        
-class MovInicioForm(forms.ModelForm):
-    class Meta:
-        model = Movimientos
-        fields = [
-            'nFlota', 'inicio', 'fin', 'kmInicio', 'kmFin', 'lugar_inicio', 
-            'lleva_carga'
-        ]
-        widgets = {
-            'inicio': forms.DateTimeInput(attrs={
-                'class': 'form-control',
-                'type': 'datetime-local',
-                'placeholder': 'dd/mm/yyyy hh:mm',  # Formato argentino
-            }),
-            'nFlota': forms.TextInput(attrs={'class': 'form-control'}),
-            'kmInicio': forms.NumberInput(attrs={'class': 'form-control'}),
-            'lugar_inicio': forms.TextInput(attrs={'class': 'form-control'}),
-            'tipo_kilometro': forms.Select(attrs={'class': 'form-control'}),
-            'lleva_carga': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        }
-        
-
-class MovFinForm(forms.ModelForm):
-    class Meta:
-        model = Movimientos
-        fields = [
-            'fin','kmFin','lugar_fin', 'permanencia', 
-            'diasPermanencia', 'cruce_frontera', 'comentarios'
-        ]
-        widgets = {
-                'fin': forms.DateTimeInput(attrs={
-                'class': 'form-control',
-                'type': 'datetime-local',
-                'placeholder': 'dd/mm/yyyy hh:mm',  # Formato argentino
-            }),
-            'kmFin': forms.NumberInput(attrs={'class': 'form-control'}),
-            'lugar_fin': forms.TextInput(attrs={'class': 'form-control'}),
             'permanencia': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'diasPermanencia': forms.NumberInput(attrs={'class': 'form-control'}),
             'cruce_frontera': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
