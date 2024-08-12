@@ -6,8 +6,8 @@ from usuarios.models import Usuario
 from django.db.models import Sum, Count, F
 #import pandas as pd
 from .models import Movimientos
-from chofer.models import Chofer
-from .forms import MovimientosForm
+from chofer.models import Chofer 
+from .forms import MovimientosForm, MovFinForm
 from django.db.models.functions import TruncMonth
 
 @login_required
