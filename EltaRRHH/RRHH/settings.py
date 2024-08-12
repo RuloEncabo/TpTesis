@@ -107,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -132,6 +133,8 @@ STATICFILES_DIRS = [
 # se agrega para ver la imagenes
 MEDIA_URL='/media/'
 MEDIA_ROOT = BASE_DIR /'media'
+
+
 
 #definir mensajes de error
 from django.contrib.messages import constants as messages
