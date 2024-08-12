@@ -51,7 +51,6 @@
                                 <table id="example" class="table table-striped table-hover table-sm">
                                     <thead>
                                         <tr>
-                                           
                                             <th scope="col" class="text-sm">Nombre</th>
                                             <th scope="col" class="text-sm">FCA</th>
                                             <th scope="col" class="text-sm">Licencia</th>
@@ -63,20 +62,40 @@
                                     <tbody>
                                         {% for chofer in choferes %}
                                         <tr>
-                                            
                                             <td class="text-dark text-sm">{{ chofer.full_name }}</td>
-                                            <td class="{% if chofer.dias_ingresoFCA_venc > 60 %}text-success{% elif chofer.dias_ingresoFCA_venc >= 30 %}text-warning{% else %}text-danger{% endif %}">
-                                                {{ chofer.dias_ingresoFCA_venc }}
+                                    
+                                            <td class="{% if chofer.dias_ingresoFCA_venc > 60 %}text-success{% elif chofer.dias_ingresoFCA_venc >= 30 %}text-warning{% elif chofer.dias_ingresoFCA_venc < 0 %}bg-danger text-warning{% else %}text-danger{% endif %}">
+                                                {% if chofer.dias_ingresoFCA_venc < 0 %}
+                                                    Vencido
+                                                {% else %}
+                                                    {{ chofer.dias_ingresoFCA_venc }}
+                                                {% endif %}
                                             </td>
-                                            <td class="{% if chofer.dias_licencia_venc > 60 %}text-success{% elif chofer.dias_licencia_venc >= 30 %}text-warning{% else %}text-danger{% endif %}">
-                                                {{ chofer.dias_licencia_venc }}
+                                    
+                                            <td class="{% if chofer.dias_licencia_venc > 60 %}text-success{% elif chofer.dias_licencia_venc >= 30 %}text-warning{% elif chofer.dias_licencia_venc < 0 %}bg-danger text-warning{% else %}text-danger{% endif %}">
+                                                {% if chofer.dias_licencia_venc < 0 %}
+                                                    Vencido
+                                                {% else %}
+                                                    {{ chofer.dias_licencia_venc }}
+                                                {% endif %}
                                             </td>
-                                            <td class="{% if chofer.dias_psicofisico_venc > 60 %}text-success{% elif chofer.dias_psicofisico_venc >= 30 %}text-warning{% else %}text-danger{% endif %}">
-                                                {{ chofer.dias_psicofisico_venc }}
+                                    
+                                            <td class="{% if chofer.dias_psicofisico_venc > 60 %}text-success{% elif chofer.dias_psicofisico_venc >= 30 %}text-warning{% elif chofer.dias_psicofisico_venc < 0 %}bg-danger text-warning{% else %}text-danger{% endif %}">
+                                                {% if chofer.dias_psicofisico_venc < 0 %}
+                                                    Vencido
+                                                {% else %}
+                                                    {{ chofer.dias_psicofisico_venc }}
+                                                {% endif %}
                                             </td>
-                                            <td class="{% if chofer.dias_curso_venc > 60 %}text-success{% elif chofer.dias_curso_venc >= 30 %}text-warning{% else %}text-danger{% endif %}">
-                                                {{ chofer.dias_curso_venc }}
+                                    
+                                            <td class="{% if chofer.dias_curso_venc > 60 %}text-success{% elif chofer.dias_curso_venc >= 30 %}text-warning{% elif chofer.dias_curso_venc < 0 %}bg-danger text-warning{% else %}text-danger{% endif %}">
+                                                {% if chofer.dias_curso_venc < 0 %}
+                                                    Vencido
+                                                {% else %}
+                                                    {{ chofer.dias_curso_venc }}
+                                                {% endif %}
                                             </td>
+                                    
                                             <td>
                                                 <a href="{% url 'modidoc' chofer.Id_chofer %}" class="btn btn-primary btn-circle btn-sm">
                                                     <i class="fa fa-eye"></i>
