@@ -147,13 +147,6 @@ EMAIL_USE_TLS = True
 
 
 
-
-#definir de calendario.
-LANGUAGE_CODE = 'es-ar'
-TIME_ZONE = 'America/Argentina/Buenos_Aires'
-USE_L10N = True
-USE_TZ = True
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
