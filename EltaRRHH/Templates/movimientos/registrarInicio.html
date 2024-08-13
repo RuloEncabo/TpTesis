@@ -20,51 +20,51 @@
       <main class="col-md-9">
         <article class="card">
           <header class="card-header bg-primary text-white">
-            <strong class="d-inline-block mr-4">Registro Movimientos</strong>
+            <strong class="d-inline-block mr-4">Registro Inicio Movimiento</strong>
           </header>
           <div class="card-body">
             <div class="row">
               <div class="col-md-12">
                 {% include 'includes/alerts.html' %}
                 <header class="mb-4">
-                  <h4 class="card-title text-center">Registro de Movimiento Chofer</h4>
+                  <h4 class="card-title text-center"></h4>
                 </header>
-                <form action="{% url 'registrarmovimiento' %}" method="POST" enctype="multipart/form-data">
+                <form action="{% url 'inicioMov' %}" method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
                   
                   <!-- Número de Flota -->
                   <div class="form-group">
                     <label>Número de Flota</label>
-                    {{ form.nFlota|add_class:"form-control" }}
+                    {{ form.nFlota }}
                   </div>
 
                   <!-- Fecha y Hora de Inicio -->
                   <div class="form-group">
                     <label>Fecha y Hora de Inicio</label>
-                    {{ form.inicio|add_class:"form-control" }}
+                    {{ form.inicio }}
                   </div>
 
                   <!-- Kilómetros Iniciales -->
                   <div class="form-group">
                     <label>Kilómetros Iniciales</label>
-                    {{ form.kmInicio|add_class:"form-control" }}
+                    {{ form.kmInicio }}
                   </div>
 
                   <!-- Lugar de Inicio -->
                   <div class="form-group">
                     <label>Lugar de Inicio</label>
-                    {{ form.lugar_inicio|add_class:"form-control" }}
+                    {{ form.lugar_inicio }}
                   </div>
 
                   <!-- Tipo de Kilómetro -->
                   <div class="form-group">
                     <label>Tipo de Kilómetro</label>
-                    {{ form.tipo_kilometro|add_class:"form-control" }}
+                    {{ form.tipo_kilometro }}
                   </div>
 
                   <!-- Lleva Carga -->
                   <div class="form-check">
-                    {{ form.lleva_carga|add_class:"form-check-input" }}
+                    {{ form.lleva_carga }}
                     <label class="form-check-label">Lleva Carga</label>
                   </div>
 
@@ -86,23 +86,6 @@
 </section>
 {% include 'includes/footer.html' %}
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-      const inicioField = document.getElementById('id_inicio');
-      const kmInicioField = document.getElementById('id_kmInicio');
-      const lugarInicioField = document.getElementById('id_lugar_inicio');
-      const tipoKilometroField = document.getElementById('id_tipo_kilometro');
-      const llevaCargaField = document.getElementById('id_lleva_carga');
-      
-      const finField = document.getElementById('id_fin');
-      const kmFinField = document.getElementById('id_kmFin');
-      const lugarFinField = document.getElementById('id_lugar_fin');
-      const permanenciaField = document.getElementById('id_permanencia');
-      const diasPermanenciaField = document.getElementById('id_diasPermanencia');
-
-    const cruceFronteraField = document.getElementById('id_cruce_frontera');
-  });
-</script>
 <!-- ========================= SECTION CONTENT END// ========================= -->
 
 {% endblock %}
