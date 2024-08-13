@@ -29,7 +29,7 @@
                 <header class="mb-4">
                   <h4 class="card-title text-center"></h4>
                 </header>
-                <form action="{% url 'inicioMov' %}" method="POST" enctype="multipart/form-data">
+                <form action="{% url 'finMov' movimiento.mov_id %}" method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
                   
                     <!-- Fecha y Hora de Fin -->
