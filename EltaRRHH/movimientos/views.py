@@ -1,15 +1,21 @@
 import datetime
+from datetime import timedelta
+from datetime import datetime
+from datetime import date
+from django.db.models.functions import Coalesce, Greatest
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
-from django.db.models import Sum, Count, F
-#import pandas as pd
+from django.db.models import Sum, Count, F, Q, F,Value
 from .models import Movimientos
 from chofer.models import Chofer 
 from .forms import MovimientosForm, MovFinForm,MovInicioForm
 from django.db.models.functions import TruncMonth
+from django.utils.timezone import now
+
+
 
 @login_required
 def registrarmovimiento(request):
@@ -55,7 +61,6 @@ def registrarmovimiento(request):
 
     return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
 
-
 ### Solo registra elChofer ###
 @login_required
 def registrarmovimientoc(request):
@@ -91,7 +96,7 @@ def registrarmovimientoc(request):
                 )
                 
                 messages.success(request, 'Movimiento registrado exitosamente.')
-                return redirect('movimientoc')
+                return redirect('listmovimiento')
             except Exception as e:
                 messages.error(request, f'Error inesperado: {str(e)}')
         else:
@@ -104,9 +109,7 @@ def registrarmovimientoc(request):
 
 
 ############################ Chofer ############################
-
-
-####### Inicio Movimiento #######
+########## Inicio Movimiento ##########
 @login_required
 def inicioMov(request):
     if request.method == 'POST':
@@ -133,7 +136,7 @@ def inicioMov(request):
                 )
                 
                 messages.success(request, 'Movimiento registrado exitosamente.')
-                return redirect('movimientoc')
+                return redirect('movchofer')
             except Exception as e:
                 messages.error(request, f'Error inesperado: {str(e)}')
         else:
@@ -143,7 +146,7 @@ def inicioMov(request):
 
     return render(request, 'movimientos/registrarInicio.html', {'form': form})
 
-####### Registro Fin Movimiento #######
+########## Registro Fin Movimiento ##########
 def finMov(request, mov_id):
     movimiento = get_object_or_404(Movimientos, mov_id=mov_id)
 
@@ -164,7 +167,7 @@ def finMov(request, mov_id):
                 movimiento.save()
                 
                 messages.success(request, 'Fin del movimiento registrado exitosamente.')
-                return redirect('movimientoc')
+                return redirect('movchofer')
             except Exception as e:
                 messages.error(request, f'Error al registrar el fin del movimiento: {str(e)}')
         else:
@@ -176,24 +179,42 @@ def finMov(request, mov_id):
     return render(request, 'movimientos/registrarFin.html', {'form': form, 'movimiento': movimiento})
 
 
-
-
-
-
-####### Modificar Movimiento Chofer #######
-@login_required
+####### Modificar Movimiento Chofer  mes en Curso #######
 def modificarmovimiento(request, mov_id):
-    movimiento = get_object_or_404(Movimientos, mov_id=mov_id)
-    if request.method == 'POST':
-        form = MovimientosForm(request.POST, instance=movimiento)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Movimiento modificado exitosamente.')
-            return redirect('listmovimientoChofer')
-    else:
-        form = MovimientosForm(instance=movimiento)
-    return render(request, 'movimientos/registrarInicio.html', {'form': form})
+    movimiento = get_object_or_404(Movimientos, pk=mov_id)  
+    # Obtén la fecha de fin del movimiento
+    fecha_fin = movimiento.fin
+    # Verifica si la fecha de fin está definida
+    if fecha_fin is not None:
+        # Obtén el mes y el año actuales
+        mes_actual = datetime.now().month
+        año_actual = datetime.now().year
 
+        # Verifica si el movimiento pertenece al mes y año actuales
+        if fecha_fin.month == mes_actual and fecha_fin.year == año_actual:
+            form = MovimientosForm(instance=movimiento)
+
+            if request.method == 'POST':
+                form = MovimientosForm(request.POST, instance=movimiento)
+                if form.is_valid():
+                    form.save()
+                    # Redirigir a otra página o mostrar un mensaje
+                    return redirect('movchofer')
+            
+            context = {
+                'form': form,
+                'movimiento': movimiento,
+            }
+            return render(request, 'movimientos/modificarmovimiento.html', context)
+        else:
+            # Agregar un mensaje informando al usuario
+            messages.error(request, "Este movimiento no puede ser modificado porque no pertenece al mes en curso. Por favor, comuníquese con RRHH.")
+            return redirect('movchofer')  # O redirigir a una página apropiada
+    else:
+        # Agregar un mensaje informando al usuario sobre la falta de fecha
+        messages.error(request, "No se puede modificar el movimiento porque no tiene una fecha de fin válida. Por favor, Cierre el Movimiento.")
+        return redirect('movchofer')  # O redirigir a una página apropiada
+    
 ####### Borrar Movimiento Chofer #######
 @login_required
 def borrarmovimiento(request):
@@ -207,18 +228,17 @@ def borrarmovimiento(request):
             return JsonResponse({'success': False})
     return JsonResponse({'success': False})
 
-
-
-
-
+###########################################################################
 ############################ Listas y Reportes ############################
+###########################################################################
 
 ### Lista los campos del Chofer ###
 def listmovimiento(request):
-    movimientos = Movimientos.objects.all()
-     # Calcular la diferencia entre kmInicio y kmFin para cada movimiento
-    for movimiento in movimientos:
-        movimiento.km_difference = (movimiento.kmFin or 0) - movimiento.kmInicio
+    # Obtener todos los movimientos y calcular la diferencia entre kmInicio y kmFin, mostrando 0 si es negativa
+    movimientos = Movimientos.objects.annotate(
+        km_difference=Greatest(Coalesce(F('kmFin'), Value(0)) - F('kmInicio'), Value(0))
+    )
+    
     context = {
         'movimientos': movimientos,
     }
@@ -249,6 +269,11 @@ def movchofer(request):
     # Obtener el chofer asociado al usuario autenticado
     chofer = request.user.chofer
 
+    # Fecha de inicio y fin del mes actual
+    today = now().date()
+    start_of_month = today.replace(day=1)
+    end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+
     # Total de kilómetros realizados por el chofer
     total_km = Movimientos.objects.filter(chofer=chofer).aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
     
@@ -258,14 +283,26 @@ def movchofer(request):
     # Total de registros realizados por el chofer
     registros_por_chofer = Movimientos.objects.filter(chofer=chofer).values('chofer').annotate(total_registros=Count('mov_id')).order_by('-total_registros')
     
+    # Kilómetros realizados por tipo de kilómetro y por mes
+    km_por_tipo = Movimientos.objects.filter(
+        chofer=chofer,
+        fin__range=[start_of_month, end_of_month]  # Filtrar por el mes actual
+    ).values('tipo_kilometro__descripcion').annotate(
+        total_km=Sum(F('kmFin') - F('kmInicio'))
+    ).order_by('tipo_kilometro__descripcion')
+
+    # Dividir los kilómetros por tipo en normales y 100%
+    km_normales = km_por_tipo.filter(tipo_kilometro__descripcion='Normal').aggregate(total_km=Sum('total_km'))['total_km']
+    km_100 = km_por_tipo.filter(tipo_kilometro__descripcion='100%').aggregate(total_km=Sum('total_km'))['total_km']
+
     context = {
         'total_km': total_km,
-        'total_choferes': 1,  # Solo se considera el chofer logueado
         'registros_por_chofer': registros_por_chofer,
         'total_movimientos': total_movimientos,
+        'km_normales': km_normales,
+        'km_100': km_100,
     }
     return render(request, 'movimientos/movchofer.html', context)
-
 
 ### Muestra Resumen de todos los Choferes ###
 def movimiento(request):
@@ -283,7 +320,6 @@ def movimiento(request):
     
     context = {
         'total_km': total_km,
-        'total_choferes': total_choferes,
         'registros_por_chofer': registros_por_chofer,
         'total_movimientos': total_movimientos,
     }
@@ -324,10 +360,10 @@ def listusuariochofer(request):
 @login_required
 def kpi(request):
     # Obtener el mes actual y el mes anterior
-    fecha_actual = datetime.date.today()
+    fecha_actual = date.today()
     mes_actual = fecha_actual.month
     anio_actual = fecha_actual.year
-    
+
     # Obtener los datos de tipos de kilómetros registrados en el último mes
     datos_km_tipos = Movimientos.objects.filter(
         fin__year=anio_actual,
@@ -363,7 +399,7 @@ def kpi(request):
             total_km=Sum('kmFin') - Sum('kmInicio')
         )['total_km']
         series_choferes.append(km_total or 0)  # Si no hay movimientos, km_total será None
-        
+
     # Contar usuarios por rol
     usuarios_por_tipo = Usuario.objects.values('role').annotate(count=Count('id'))
     # Asumiendo que tienes dos roles, 'Chofer' y 'Usuario'
@@ -377,7 +413,7 @@ def kpi(request):
     # Preparar los datos para el gráfico
     labels_tipo = list(conteos.keys())
     series_tipo = list(conteos.values())
-    
+
     context = {
         'labels_choferes': labels_choferes,
         'series_choferes': series_choferes,
@@ -385,8 +421,8 @@ def kpi(request):
         'series_meses': series_meses,
         'labels_tipo': labels_tipo,
         'series_tipo': series_tipo,
-        'labels_km_tipos':labels_km_tipos,
-        'series_km_tipos':series_km_tipos
+        'labels_km_tipos': labels_km_tipos,
+        'series_km_tipos': series_km_tipos
     }
     return render(request, 'movimientos/analitica.html', context)
     
