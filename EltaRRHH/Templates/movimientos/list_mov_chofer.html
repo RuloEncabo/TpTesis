@@ -51,15 +51,15 @@
                                         <tr>
                                             <td>{{ movimiento.inicio|date:"d-m-y H:i" }}</td>
                                             <td>{{ movimiento.lugar_inicio }}</td>
-                                            <td>{{ movimiento.fin }}</td>
+                                            <td>{{ movimiento.fin|date:"d-m-y H:i"}}</td>
                                             <td>{{ movimiento.lugar_fin }}</td>
                                             <td>{{ movimiento.tipo_kilometro }}</td>
                                             <td>{{ movimiento.diferencia_km }}</td>
                                             <td>
-                                                <a href="{% url 'modificarmovimiento' movimiento.mov_id %}" class="btn btn-primary btn-sm">Modificar</a>
-                                                <button class="btn btn-danger btn-borrar" data-id="{{ movimiento.mov_id }}">Borrar</button>
-                                                {% if not movimiento.fin %} <!-- Mostrar botón "Cerrar" solo si no se ha registrado el fin -->
-                                                    <a href="{% url 'finMov' movimiento.mov_id %}" class="btn btn-success btn-sm">Cerrar Movimiento</a>
+                                                <a href="{% url 'modificarmovimiento' mov_id=movimiento.mov_id %}" class="btn btn-primary btn-sm">Modificar</a>
+                                                <button class="btn btn-danger btn-borrar" data-id="{{ movimiento.mov_id }}">Eliminar</button>
+                                                {% if not movimiento.fin %} <!-- solo muestra el boton "Cerrar" solo si no se ha registrado el fin -->
+                                                    <a href="{% url 'finMov' movimiento.mov_id %}" class="btn btn-success btn-sm">Cerrar </a>
                                                 {% endif %}
                                             </td>
                                         </tr>
