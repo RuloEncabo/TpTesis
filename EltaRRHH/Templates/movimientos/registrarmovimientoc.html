@@ -40,90 +40,21 @@
             <div class="row">
               <div class="col-md-12">
                 {% include 'includes/alerts.html' %}
-                <header class="mb-4"><h4 class="card-title">Registro de Movimiento Chofer</h4></header>
-                    <form action="{% url 'registrarmovimiento' %}" method="POST" enctype="multipart/form-data">
+                <header class="mb-4"><h4 class="card-title"></h4></header>
+                    <form action="{% url 'registrarmovimientoc' %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
 
-                        <!-- Número de Flota -->
-                        <div class="form-group">
-                            <label>Número de Flota</label>
-                            {{ form.nFlota }}
-                        </div>
-
-                        <!-- Fecha y Hora de Inicio -->
-                        <div class="form-group">
-                            <label>Fecha y Hora de Inicio</label>
-                            {{ form.inicio }}
-                        </div>
-
-                        <!-- Kilómetros Iniciales -->
-                        <div class="form-group">
-                            <label>Kilómetros Iniciales</label>
-                            {{ form.kmInicio }}
-                        </div>
-
-                        <!-- Lugar de Inicio -->
-                        <div class="form-group">
-                            <label>Lugar de Inicio</label>
-                            {{ form.lugar_inicio }}
-                        </div>
-
-                        <!-- Tipo de Kilómetro -->
-                        <div class="form-group">
-                            <label>Tipo de Kilómetro</label>
-                            {{ form.tipo_kilometro }}
-                        </div>
-
-                        <!-- Lleva Carga -->
-                        <div class="form-check">
-                            {{ form.lleva_carga }}
-                            <label class="form-check-label">Lleva Carga</label>
-                        </div>
-
-                        <!-- Fecha y Hora de Fin -->
-                        <div class="form-group">
-                            <label>Fecha y Hora de Fin</label>
-                            {{ form.fin }}
-                        </div>
-
-                        <!-- Kilómetros Finales -->
-                        <div class="form-group">
-                            <label>Kilómetros Finales</label>
-                            {{ form.kmFin }}
-                        </div>
-
-                        <!-- Lugar de Fin -->
-                        <div class="form-group">
-                            <label>Lugar de Fin</label>
-                            {{ form.lugar_fin }}
-                        </div>
-
-                        <!-- Permanencia -->
-                        <div class="form-check">
-                            {{ form.permanencia }}
-                            <label class="form-check-label">Permanencia</label>
-                        </div>
-
-                        <!-- Días de Permanencia -->
-                        <div class="form-group">
-                            <label>Días de Permanencia</label>
-                            {{ form.diasPermanencia }}
-                        </div>
-
-                        <!-- Cruce de Frontera -->
-                        <div class="form-check">
-                            {{ form.cruce_frontera }}
-                            <label class="form-check-label">Cruce de Frontera</label>
-                        </div>
-
-                        <!-- Comentarios -->
-                        <div class="form-group">
-                            <label>Observacoion </label>
-                            {{ form.comentarios }}
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-block">Registrar Movimiento</button>
-                    </form>
+                        <div class="col text-center">
+                          <a href="{% url 'inicioMov' %}" class="btn btn-primary btn-lg">
+                              Inicio Movimiento
+                          </a>
+                      </div>
+                      <br>
+                      <div class="col text-center">
+                          <a href="" class="btn btn-primary btn-lg">
+                              Fin  Movimiento
+                          </a>
+                       
                     {% if messages %}
                     {% for message in messages %}
                         <p>{{ message }}</p>
