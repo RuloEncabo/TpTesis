@@ -35,8 +35,8 @@ class MovInicioForm(forms.ModelForm):
     class Meta:
         model = Movimientos
         fields = [
-            'nFlota', 'inicio', 'fin', 'kmInicio', 'kmFin', 'lugar_inicio', 
-            'lleva_carga'
+            'nFlota', 'inicio','kmInicio', 'kmFin', 'lugar_inicio', 
+            'lleva_carga','tipo_kilometro'
         ]
         widgets = {
             'inicio': forms.DateTimeInput(attrs={
