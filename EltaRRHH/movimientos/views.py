@@ -1,13 +1,14 @@
 import datetime
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
 from django.db.models import Sum, Count, F
 #import pandas as pd
 from .models import Movimientos
 from chofer.models import Chofer 
-from .forms import MovimientosForm, MovFinForm
+from .forms import MovimientosForm, MovFinForm,MovInicioForm
 from django.db.models.functions import TruncMonth
 
 @login_required
@@ -99,6 +100,118 @@ def registrarmovimientoc(request):
         form = MovimientosForm()
 
     return render(request, 'movimientos/registrarmovimientoc.html', {'form': form})
+
+
+
+############################ Chofer ############################
+
+
+####### Inicio Movimiento #######
+@login_required
+def inicioMov(request):
+    if request.method == 'POST':
+        form = MovInicioForm(request.POST)
+        if form.is_valid():
+            try:
+                usuario = request.user
+                # Verificar si el usuario es un chofer
+                try:
+                    chofer = Chofer.objects.get(usuario=usuario)
+                except Chofer.DoesNotExist:
+                    chofer = None
+
+                # Crear el movimiento con los campos requeridos
+                Movimientos.objects.create(
+                    usuario_id=usuario,  # Usuario actual
+                    chofer=chofer,  # Puede ser None si el usuario no es un chofer
+                    nFlota=form.cleaned_data['nFlota'],
+                    inicio=form.cleaned_data['inicio'],
+                    kmInicio=form.cleaned_data['kmInicio'],
+                    tipo_kilometro=form.cleaned_data['tipo_kilometro'],
+                    lugar_inicio=form.cleaned_data['lugar_inicio'],
+                    lleva_carga=form.cleaned_data['lleva_carga'],
+                )
+                
+                messages.success(request, 'Movimiento registrado exitosamente.')
+                return redirect('movimientoc')
+            except Exception as e:
+                messages.error(request, f'Error inesperado: {str(e)}')
+        else:
+            messages.error(request, 'Formulario inválido. Por favor, revisa los datos ingresados.')
+    else:
+        form = MovimientosForm()
+
+    return render(request, 'movimientos/registrarInicio.html', {'form': form})
+
+####### Registro Fin Movimiento #######
+def finMov(request, mov_id):
+    movimiento = get_object_or_404(Movimientos, mov_id=mov_id)
+
+    if request.method == 'POST':
+        form = MovFinForm(request.POST)
+        if form.is_valid():
+            try:
+                # Actualizar los campos relacionados con el fin del movimiento
+                movimiento.fin = form.cleaned_data['fin']
+                movimiento.kmFin = form.cleaned_data['kmFin']
+                movimiento.lugar_fin = form.cleaned_data['lugar_fin']
+                movimiento.permanencia = form.cleaned_data['permanencia']
+                movimiento.diasPermanencia = form.cleaned_data['diasPermanencia']
+                movimiento.cruce_frontera = form.cleaned_data['cruce_frontera']
+                movimiento.comentarios = form.cleaned_data['comentarios']
+
+                # Guardar los cambios
+                movimiento.save()
+                
+                messages.success(request, 'Fin del movimiento registrado exitosamente.')
+                return redirect('movimientoc')
+            except Exception as e:
+                messages.error(request, f'Error al registrar el fin del movimiento: {str(e)}')
+        else:
+            print(form.errors)  # ver los errores del formulario en la consola
+            messages.error(request, 'Formulario inválido. Por favor, revisa los datos ingresados.')
+    else:
+        form = MovFinForm(initial={'movimiento_id': movimiento.mov_id})
+
+    return render(request, 'movimientos/registrarFin.html', {'form': form, 'movimiento': movimiento})
+
+
+
+
+
+
+####### Modificar Movimiento Chofer #######
+@login_required
+def modificarmovimiento(request, mov_id):
+    movimiento = get_object_or_404(Movimientos, mov_id=mov_id)
+    if request.method == 'POST':
+        form = MovimientosForm(request.POST, instance=movimiento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Movimiento modificado exitosamente.')
+            return redirect('listmovimientoChofer')
+    else:
+        form = MovimientosForm(instance=movimiento)
+    return render(request, 'movimientos/registrarInicio.html', {'form': form})
+
+####### Borrar Movimiento Chofer #######
+@login_required
+def borrarmovimiento(request):
+    if request.method == 'POST':
+        movimiento_id = request.POST.get('id')
+        try:
+            movimiento = get_object_or_404(Movimientos, mov_id=movimiento_id)
+            movimiento.delete()
+            return JsonResponse({'success': True})
+        except Movimientos.DoesNotExist:
+            return JsonResponse({'success': False})
+    return JsonResponse({'success': False})
+
+
+
+
+
+############################ Listas y Reportes ############################
 
 ### Lista los campos del Chofer ###
 def listmovimiento(request):
