@@ -52,11 +52,9 @@
                                     <thead>
                                         <tr>
                                             <th scope="col" class="text-sm">Chofer</th>
-                                            <th scope="col" class="text-sm">Inicio</th>
-                                            
+                                            <th scope="col" class="text-sm">Inicio</th>  
                                             <th scope="col" class="text-sm">Lugar Inicio</th>
-                                            <th scope="col" class="text-sm">Fin</th>
-                                            
+                                            <th scope="col" class="text-sm">Fin</th>                                            
                                             <th scope="col" class="text-sm">Lugar Fin</th>
                                             <th scope="col" class="text-sm">Tipo Km</th>
                                             <th scope="col" class="text-sm">Km Tramo</th>
@@ -67,10 +65,8 @@
                                         <tr>
                                             <td class="text-dark text-sm">{{ movimiento.chofer.full_name}}</td>
                                             <td class="text-dark text-sm">{{ movimiento.inicio|date:"d-m-y H:i" }}</td>
-                                            
                                             <td class="text-dark text-sm">{{ movimiento.lugar_inicio }}</td>
                                             <td class="text-dark text-sm">{{ movimiento.fin|date:"d-m-y H:i" }}</td>
-                                           
                                             <td class="text-dark text-sm">{{ movimiento.lugar_fin }}</td>
                                             <td class="text-dark text-sm">{{ movimiento.tipo_kilometro }}</td>
                                             <td class="text-dark text-sm">{{ movimiento.km_difference }}</td>
