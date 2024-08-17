@@ -62,7 +62,10 @@
                                                 <td class="text-sm">{{ usuario.email }}</td>
                                                 <td class="text-sm">{{ usuario.role }}</td>
                                                 <td>
-                                                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ usuario.id }}" data-role="{{ usuario.role }}">Borrar</button>
+                                                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ usuario.id }}" data-role="{{ usuario.role }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                    
                                                 </td>
                                             </tr>
                                             {% endfor %}
