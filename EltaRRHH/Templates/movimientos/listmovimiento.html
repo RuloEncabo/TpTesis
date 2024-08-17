@@ -26,7 +26,21 @@
     }
 </style>
 
+
+
 {% block content %}
+<style>
+    /* Asegura que el contenedor de la tabla permita el desplazamiento horizontal */
+    .dataTables_wrapper {
+        overflow-x: auto; /* Permite el desplazamiento horizontal */
+        width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+    }
+
+    /* Asegura que la tabla no se compacte */
+    #movimientos-table {
+        width: 100% !important; /* Fuerza a la tabla a ocupar el 100% del ancho del contenedor */
+    }
+</style>
 <br>
 <section class="section-conten padding-y bg">
     <div class="container-fluid">
@@ -58,6 +72,8 @@
                                             <th scope="col" class="text-sm">Lugar Fin</th>
                                             <th scope="col" class="text-sm">Tipo Km</th>
                                             <th scope="col" class="text-sm">Km Tramo</th>
+                                            <th scope="col" class="text-sm"></th> <!-- Nueva columna para los botones -->
+                                            <th scope="col" class="text-sm"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -67,10 +83,24 @@
                                             <td class="text-dark text-sm">{{ movimiento.inicio|date:"d-m-y H:i" }}</td>
                                             <td class="text-dark text-sm">{{ movimiento.lugar_inicio }}</td>
                                             <td class="text-dark text-sm">{{ movimiento.fin|date:"d-m-y H:i" }}</td>
-
                                             <td class="text-dark text-sm">{{ movimiento.lugar_fin }}</td>
                                             <td class="text-dark text-sm">{{ movimiento.tipo_kilometro }}</td>
                                             <td class="text-dark text-sm">{{ movimiento.km_difference }}</td>
+                                            <td>
+                                                <!-- Botón para modificar -->
+                                                <a href="{% url 'modimovR' mov_id=movimiento.mov_id %}" class="btn btn-warning btn-sm">
+                                                    <i class="fa fa-pencil"></i> 
+                                                </a>
+                                            </td>
+                                            <td>
+                                                  <!-- Botón para eliminar -->
+                                                <form action="{% url 'borrarmovimientoR' %}" method="POST" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-id="{{ movimiento.mov_id }}" onclick="return confirm('¿Estás seguro de que deseas eliminar este movimiento?');">
+                                                        <i class="fa fa-trash"></i> 
+                                                </form
+
+                                            </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -104,12 +134,14 @@
 
 <script>
     $(document).ready(function() {
+        // Agrega una función de búsqueda para filtrar por fechas
         $.fn.dataTable.ext.search.push(
             function(settings, data, dataIndex) {
-                var min = $('#min-date').datepicker("getDate");
-                var max = $('#max-date').datepicker("getDate");
-                var startDate = new Date(data[0]);
-
+                var min = $('#min-date').datepicker("getDate"); // Fecha mínima seleccionada
+                var max = $('#max-date').datepicker("getDate"); // Fecha máxima seleccionada
+                var startDate = new Date(data[1]);  // Obtiene la fecha de la columna de inicio (índice 1)
+    
+                // Verifica si la fecha está dentro del rango
                 if ((min == null && max == null) || 
                     (min == null && startDate <= max) ||
                     (min <= startDate && max == null) ||
@@ -158,4 +190,38 @@
             $('#movimientos-table').DataTable().draw();
         });
     });
+
+
+    $(document).ready(function() {
+        $('.btn-borrar').on('click', function(e) {
+            e.preventDefault(); // Evita que el botón realice la acción predeterminada
+    
+            var $btn = $(this);
+            var movimientoId = $btn.data('id'); // Obtener el ID del movimiento desde el atributo data-id
+            var $row = $btn.closest('tr');
+    
+            if (confirm('¿Estás seguro de que deseas eliminar este movimiento?')) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "borrarmovimientoR" %}', // URL a la vista que maneja la eliminación
+                    data: {
+                        'id': movimientoId,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}' // Token CSRF para la seguridad
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $row.remove(); // Elimina la fila de la tabla
+                            alert('Movimiento eliminado exitosamente.');
+                        } else {
+                            alert('Error al eliminar el movimiento.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error en la solicitud:', status, error);
+                        alert('Error en la solicitud. Por favor, intenta nuevamente.');
+                    }
+                });
+            }
+        });
+    });    
 </script>
