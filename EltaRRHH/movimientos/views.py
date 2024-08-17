@@ -1,5 +1,7 @@
 import datetime
-from datetime import timedelta
+import calendar
+from datetime import datetime
+from datetime import timedelta, timezone
 from datetime import datetime
 from datetime import date
 from django.db.models.functions import Coalesce, Greatest
@@ -8,7 +10,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
-from django.db.models import Sum, Count, F, Q, F,Value
+from django.db.models import Sum,Count,F,Value,ExpressionWrapper, IntegerField
 from .models import Movimientos
 from chofer.models import Chofer 
 from .forms import MovimientosForm, MovFinForm,MovInicioForm
@@ -106,7 +108,51 @@ def registrarmovimientoc(request):
 
     return render(request, 'movimientos/registrarmovimientoc.html', {'form': form})
 
+############################ RRHH ############################
+########## Modificar Movimiento ##########
 
+@login_required
+def modimovR(request, mov_id):
+    # Obtener el movimiento por su ID o devolver un 404 si no existe
+    movimiento = get_object_or_404(Movimientos, pk=mov_id)
+    
+    # Obtener la fecha de fin del movimiento
+    fecha_fin = movimiento.fin
+    
+    # Verificar si la fecha de fin está definida
+    if fecha_fin is not None:
+        # Instanciar el formulario con el movimiento actual
+        form = MovimientosForm(instance=movimiento)
+
+        if request.method == 'POST':
+            form = MovimientosForm(request.POST, instance=movimiento)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "El movimiento se ha modificado correctamente.")
+                return redirect('listmovimiento')
+        # Preparar el contexto para la plantilla
+        context = {
+            'form': form,
+            'movimiento': movimiento,
+        }
+        return render(request, 'movimientos/modimovR.html', context)
+    else:
+        # Informar al usuario que el movimiento no tiene una fecha de fin válida
+        messages.error(request, "No se puede modificar el movimiento porque no tiene una fecha de fin válida. Por favor, cierre el movimiento.")
+        return redirect('listmovimiento')
+
+########## borrar Movimiento ##########
+@login_required
+def borrarmovimientoR(request):
+    if request.method == 'POST':
+        movimiento_id = request.POST.get('id')
+        try:
+            movimiento = get_object_or_404(Movimientos, mov_id=movimiento_id)
+            movimiento.delete()
+            return JsonResponse({'success': True})
+        except Movimientos.DoesNotExist:
+            return JsonResponse({'success': False})
+    return JsonResponse({'success': False})
 
 ############################ Chofer ############################
 ########## Inicio Movimiento ##########
@@ -232,7 +278,7 @@ def borrarmovimiento(request):
 ############################ Listas y Reportes ############################
 ###########################################################################
 
-### Lista los campos del Chofer ###
+####### Lista los campos del Chofer #######
 def listmovimiento(request):
     # Obtener todos los movimientos y calcular la diferencia entre kmInicio y kmFin, mostrando 0 si es negativa
     movimientos = Movimientos.objects.annotate(
@@ -244,7 +290,7 @@ def listmovimiento(request):
     }
     return render(request, 'movimientos/listmovimiento.html', context)
 
-### Lista los campos del Chofer que esta logeado ###
+####### Lista los campos del Chofer que esta logeado #######
 @login_required
 def listmovimientoChofer(request):
     usuario = request.user
@@ -264,7 +310,7 @@ def listmovimientoChofer(request):
     }
     return render(request, 'movimientos/list_mov_chofer.html', context)
 
-### Muestra Resumen Choferes en sesion ###
+####### Muestra Resumen Choferes en sesion #######
 def movchofer(request):
     # Obtener el chofer asociado al usuario autenticado
     chofer = request.user.chofer
@@ -304,7 +350,7 @@ def movchofer(request):
     }
     return render(request, 'movimientos/movchofer.html', context)
 
-### Muestra Resumen de todos los Choferes ###
+####### Muestra Resumen de todos los Choferes #######
 def movimiento(request):
     # Total de kilómetros realizados
     total_km = Movimientos.objects.aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
@@ -320,12 +366,13 @@ def movimiento(request):
     
     context = {
         'total_km': total_km,
+        'total_choferes':total_choferes,
         'registros_por_chofer': registros_por_chofer,
         'total_movimientos': total_movimientos,
     }
     return render(request, 'movimientos/movimiento.html', context)
 
-### Funcion para determinar moviento por Chofer ###
+####### Funcion para determinar moviento por Chofer #######
 def movimientoc(request):
     # Total de kilómetros realizados
     total_km = Movimientos.objects.aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
@@ -347,7 +394,7 @@ def movimientoc(request):
     }
     return render(request, 'movimientos/movimiento.html', context)
 
-### Lista los campos del Chofer ###
+####### Lista los campos del Chofer #######
 def listusuariochofer(request):
     usuarioschofer = Chofer.objects.all()
     context = {
@@ -355,27 +402,26 @@ def listusuariochofer(request):
     }
     return render(request, 'chofer/listusuariochofer.html', context)
 
-
-## Funciones para Graficos ###
+######### Funciones para Graficos #######
 @login_required
 def kpi(request):
-    # Obtener el mes actual y el mes anterior
+    
+    # Obtener el mes actual y el año actual
     fecha_actual = date.today()
     mes_actual = fecha_actual.month
     anio_actual = fecha_actual.year
-
-    # Obtener los datos de tipos de kilómetros registrados en el último mes
+    # Obtener los datos de tipos de kilómetros registrados en el mes actual
     datos_km_tipos = Movimientos.objects.filter(
         fin__year=anio_actual,
         fin__month=mes_actual
     ).values('tipo_kilometro__descripcion').annotate(
-        total_km=Sum('kmFin') - Sum('kmInicio')
+        total_km=Sum(F('kmFin') - F('kmInicio'))
     ).order_by('tipo_kilometro__descripcion')
-
+    # Preparar las etiquetas y los datos para la gráfica
     labels_km_tipos = [dato['tipo_kilometro__descripcion'] for dato in datos_km_tipos]
     series_km_tipos = [dato['total_km'] for dato in datos_km_tipos]
-
-    # Obtener los datos de kilómetros por mes
+    
+   #------- Obtener los datos de kilómetros por mes ----------------
     datos_por_mes = Movimientos.objects.annotate(
         mes=TruncMonth('fin')
     ).values('mes').annotate(
@@ -385,25 +431,39 @@ def kpi(request):
     # Filtrar los datos que no tienen 'mes' como None
     datos_por_mes = [dato for dato in datos_por_mes if dato['mes'] is not None]
 
-    labels_meses = [dato['mes'].strftime('%Y-%m') for dato in datos_por_mes]
-    series_meses = [dato['total_km'] for dato in datos_por_mes]
+    labels_meses = []
+    series_meses = []
 
-    # Obtener los datos de kilómetros por chofer
+    for dato in datos_por_mes:
+        mes_fecha = dato['mes']
+        mes_nombre = calendar.month_name[mes_fecha.month]  # Obtiene el nombre del mes
+        anio = mes_fecha.year
+        labels_meses.append(f'{mes_nombre} {anio}')  # Formatea como "Mes Año"
+        series_meses.append(dato['total_km'])
+
+
+    ### Obtener los datos de kilómetros por chofer --------
     choferes = Chofer.objects.all()
     labels_choferes = []
     series_choferes = []
 
     for chofer in choferes:
         labels_choferes.append(chofer.nombre)
-        km_total = Movimientos.objects.filter(chofer=chofer).aggregate(
-            total_km=Sum('kmFin') - Sum('kmInicio')
+        
+        # Filtrar movimientos que tienen kmInicio y kmFin no nulos
+        km_total = Movimientos.objects.filter(
+            chofer=chofer,
+            kmInicio__isnull=False,
+            kmFin__isnull=False
+        ).aggregate(
+            total_km=Sum(ExpressionWrapper(F('kmFin') - F('kmInicio'), output_field=IntegerField()))
         )['total_km']
+        
         series_choferes.append(km_total or 0)  # Si no hay movimientos, km_total será None
 
-    # Contar usuarios por rol
+    ##### Contar usuarios por rol #####
     usuarios_por_tipo = Usuario.objects.values('role').annotate(count=Count('id'))
-    # Asumiendo que tienes dos roles, 'Chofer' y 'Usuario'
-    roles = ['Chofer', 'User']  # Ajusta estos nombres a los roles reales que tienes
+    roles = ['Chofer', 'User']  # verifacar  eleonombres a los roles reales que tienes
     # Inicializar los conteos en 0
     conteos = {rol: 0 for rol in roles}
     # Contar usuarios por rol
