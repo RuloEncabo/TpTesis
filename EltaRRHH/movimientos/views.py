@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
-from django.db.models import Sum,Count,F,Value,ExpressionWrapper, IntegerField
+from django.db.models import Sum,Count,F,Value,ExpressionWrapper, IntegerField, Q
 from .models import Movimientos
 from chofer.models import Chofer 
 from .forms import MovimientosForm, MovFinForm,MovInicioForm
@@ -406,7 +406,7 @@ def listusuariochofer(request):
 @login_required
 def kpi(request):
 
-# <----------- Obtener el mes actual y el año actual ------------>
+# <------------ Obtener el mes actual y el año actual ------------>
     fecha_actual = date.today()
     mes_actual = fecha_actual.month
     anio_actual = fecha_actual.year
@@ -447,7 +447,7 @@ def kpi(request):
         labels_meses.append(f'{mes_nombre} {anio}')  # Formatea como "Mes Año"
         series_meses.append(dato['total_km'])
 
-# <----------- Obtener los datos de kilómetros por chofer ------------>
+# <------------ Obtener los datos de kilómetros por chofer ------------>
     choferes = Chofer.objects.all()
     labels_choferes = []
     series_choferes = []
@@ -466,7 +466,7 @@ def kpi(request):
         
         series_choferes.append(km_total or 0)  # Si no hay movimientos, km_total será None
 
-# <----------- Contar usuarios por rol ------------>
+# <------------ Contar usuarios por rol ------------>
     usuarios_por_tipo = Usuario.objects.values('role').annotate(count=Count('id'))
     roles = ['Chofer', 'User']  # verifacar  eleonombres a los roles reales que tienes
     # Inicializar los conteos en 0
@@ -479,6 +479,52 @@ def kpi(request):
     labels_tipo = list(conteos.keys())
     series_tipo = list(conteos.values())
 
+# <------------ Documentacion Vencida ------------>
+
+    # Definir el rango de fecha (hoy + 30 días)
+    hoy = datetime.today()
+    fecha_limite = hoy + timedelta(days=30)
+
+    # Filtrar las licencias que están vencidas y las que no lo están
+    licencias_vencidas = Chofer.objects.filter(licencia_venc__lte=hoy).count()
+    licencias_no_vencidas = Chofer.objects.filter(licencia_venc__gt=hoy).count()
+
+    # Preparar los datos para el gráfico de pie
+    labels_licencias = ['Vencidas', 'No Vencidas']
+    series_licencias = [licencias_vencidas, licencias_no_vencidas]
+
+    # Contexto para el template
+    context = {
+        'labels_licencias': labels_licencias,
+        'series_licencias': series_licencias,
+    }
+
+# <------------ Vecimimientos por tipo de Documentacion ------------>
+    # Definir el rango de fecha (hoy + 30 días)
+    hoy = datetime.today()
+    fecha_limite = hoy + timedelta(days=30)
+
+    # Filtrar los registros con vencimientos mayores a hoy y menores a 30 días
+    vencimientos = Chofer.objects.filter(
+        Q(ingresoFCA_venc__gt=hoy, ingresoFCA_venc__lte=fecha_limite) |
+        Q(licencia_venc__gt=hoy, licencia_venc__lte=fecha_limite) |
+        Q(psicofisico_venc__gt=hoy, psicofisico_venc__lte=fecha_limite) |
+        Q(curso_venc__gt=hoy, curso_venc__lte=fecha_limite)
+    )
+
+    # Contar los vencimientos por tipo de documentación
+    conteo_vencimientos = {
+        'Ingreso FCA': vencimientos.filter(ingresoFCA_venc__gt=hoy, ingresoFCA_venc__lte=fecha_limite).count(),
+        'Licencia': vencimientos.filter(licencia_venc__gt=hoy, licencia_venc__lte=fecha_limite).count(),
+        'Psicofísico': vencimientos.filter(psicofisico_venc__gt=hoy, psicofisico_venc__lte=fecha_limite).count(),
+        'Curso': vencimientos.filter(curso_venc__gt=hoy, curso_venc__lte=fecha_limite).count(),
+    }
+
+    # Preparar los datos para el gráfico
+    labels_vencimientos = list(conteo_vencimientos.keys())
+    series_vencimientos = list(conteo_vencimientos.values())
+
+#  <----------- Variables para Graficos ------------>
     context = {
         'labels_choferes': labels_choferes,
         'series_choferes': series_choferes,
@@ -487,7 +533,11 @@ def kpi(request):
         'labels_tipo': labels_tipo,
         'series_tipo': series_tipo,
         'labels_km_tipos': labels_km_tipos,
-        'series_km_tipos': series_km_tipos
+        'series_km_tipos': series_km_tipos,
+        'labels_licencias': labels_licencias,
+        'series_licencias': series_licencias,
+        'labels_vencimientos': labels_vencimientos,
+        'series_vencimientos': series_vencimientos,
     }
     return render(request, 'movimientos/analitica.html', context)
     
