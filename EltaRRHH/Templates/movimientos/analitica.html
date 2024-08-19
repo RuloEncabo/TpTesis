@@ -75,31 +75,27 @@
                          <div class="row mt-3">
                             <!-- Card 2 -->
                             <div class="col-md-6">
-                                <pre>
-                                    Labels: {{ labels_km_tipos }}
-                                    Series: {{ series_km_tipos }}
-                                </pre>
+                             <!--   <pre>
+                                    Labels: {{ labels_licencias }}
+                                    Series: {{ series_licencias }}
+                                </pre> -->
                                 <div class="card border border-secondary text-center">
                                     <div class="card-header">
                                         <strong class="card-title text-primary" > Tipo Usuario </strong>
                                     </div>
                                     <div class="card-body">
-                                        <canvas id=""></canvas> 
+                                        <canvas id="v"></canvas> 
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
-                                <pre>
-                                    Labels: {{ labels_km_tipos }}
-                                    Series: {{ series_km_tipos }}
-                                </pre>
                                 <div class="card border border-secondary text-center">
                                     <div class="card-header">
-                                        <strong class="card-title text-primary" > Tipo KM </strong>
+                                        <strong class="card-title text-primary" > Vencimientos < 30 dias</strong>
                                     </div>
                                     <div class="card-body">
-                                            <canvas id=""></canvas> 
+                                            <canvas id="barChartv"></canvas> 
                                     </div>
                                 </div>
                             </div>
@@ -136,6 +132,13 @@
         const labelsKmTipos = {{ labels_km_tipos|safe }};
         const seriesKmTipos = {{ series_km_tipos|safe }};
         
+        const labels_licencias = {{ labels_licencias|safe }};
+        const series_licencias = {{ series_licencias|safe }};
+
+        const labels_vencimientos = {{ labels_vencimientos|safe}};
+        const series_vencimientos = {{ series_vencimientos|safe}};
+
+
         //Km por chofer
         const ctx = document.getElementById("barChartC").getContext('2d');
         const barChart = new Chart(ctx, {
@@ -236,5 +239,70 @@
             }
         });
 
+         //torta para tipo de usuario
+        var ctxTipo = document.getElementById('tipo').getContext('2d');
+        var chart = new Chart(ctxTipo, {
+            type: 'doughnut',  // Puedes usar 'pie', 'doughnut', etc. según prefieras
+            data: {
+                labels: labelsTipo,  // Etiquetas de los roles
+                datasets: [{
+                    label: 'Conteo de Usuarios',
+                    data: seriesTipo,
+                    backgroundColor: ['#FF6384', '#36A2EB','#FF6384','#36A2EB']  // Colores para cada rol
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Usuarios por Rol'
+                }
+            }
+        });
+
+          //torta Vencimientos
+          var ctxV = document.getElementById('v').getContext('2d');
+          var chart = new Chart(ctxV, {
+              type: 'pie',  // 'pie', 'doughnut',
+              data: {
+                  labels: labels_licencias,  // Etiquetas vencido o no 
+                  datasets: [{
+                      label: 'Estado Documentacion',
+                      data: series_licencias,
+                      backgroundColor: ['#FF6384', '#36A2EB']  // Colores para licencia
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  title: {
+                      display: true,
+                      text: 'Estado Documentacion'
+                  }
+              }
+          });
+
+        const ctxven = document.getElementById("barChartv").getContext('2d');
+        new Chart(ctxven, {
+            type: 'bar',
+            data: {
+                labels: labels_vencimientos,
+                datasets: [{
+                    label: 'Documentacion a Vencer',
+                    data: series_vencimientos,
+                    backgroundColor: 'rgba(100, 206, 87, 0.6)',
+                    borderColor: 'rgba(100,255, 206, 86, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
     </script>
 </body>
