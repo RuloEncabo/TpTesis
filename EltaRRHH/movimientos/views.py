@@ -433,8 +433,8 @@ def kpi(request):
 
     # Crear un diccionario para traducir nombres de meses a castellano
     meses_en_castellano = {
-        1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril', 5: 'Mayo', 6: 'Junio',
-        7: 'Julio', 8: 'Agosto', 9: 'Septiembre', 10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'
+        1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
+        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'
     }
 
     labels_meses = []
@@ -453,7 +453,7 @@ def kpi(request):
     series_choferes = []
 
     for chofer in choferes:
-        labels_choferes.append(chofer.nombre)
+        labels_choferes.append(chofer.apellido)
         
         # Filtrar movimientos que tienen kmInicio y kmFin no nulos
         km_total = Movimientos.objects.filter(
