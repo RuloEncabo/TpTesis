@@ -405,8 +405,8 @@ def listusuariochofer(request):
 ######### Funciones para Graficos #######
 @login_required
 def kpi(request):
-    
-    # Obtener el mes actual y el año actual
+
+# <----------- Obtener el mes actual y el año actual ------------>
     fecha_actual = date.today()
     mes_actual = fecha_actual.month
     anio_actual = fecha_actual.year
@@ -421,7 +421,7 @@ def kpi(request):
     labels_km_tipos = [dato['tipo_kilometro__descripcion'] for dato in datos_km_tipos]
     series_km_tipos = [dato['total_km'] for dato in datos_km_tipos]
     
-   #------- Obtener los datos de kilómetros por mes ----------------
+    # Obtener los datos de kilómetros por mes 
     datos_por_mes = Movimientos.objects.annotate(
         mes=TruncMonth('fin')
     ).values('mes').annotate(
@@ -431,18 +431,23 @@ def kpi(request):
     # Filtrar los datos que no tienen 'mes' como None
     datos_por_mes = [dato for dato in datos_por_mes if dato['mes'] is not None]
 
+    # Crear un diccionario para traducir nombres de meses a castellano
+    meses_en_castellano = {
+        1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril', 5: 'Mayo', 6: 'Junio',
+        7: 'Julio', 8: 'Agosto', 9: 'Septiembre', 10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'
+    }
+
     labels_meses = []
     series_meses = []
 
     for dato in datos_por_mes:
         mes_fecha = dato['mes']
-        mes_nombre = calendar.month_name[mes_fecha.month]  # Obtiene el nombre del mes
+        mes_nombre = meses_en_castellano[mes_fecha.month]  # Obtiene el nombre del mes en castellano
         anio = mes_fecha.year
         labels_meses.append(f'{mes_nombre} {anio}')  # Formatea como "Mes Año"
         series_meses.append(dato['total_km'])
 
-
-    ### Obtener los datos de kilómetros por chofer --------
+# <----------- Obtener los datos de kilómetros por chofer ------------>
     choferes = Chofer.objects.all()
     labels_choferes = []
     series_choferes = []
@@ -461,7 +466,7 @@ def kpi(request):
         
         series_choferes.append(km_total or 0)  # Si no hay movimientos, km_total será None
 
-    ##### Contar usuarios por rol #####
+# <----------- Contar usuarios por rol ------------>
     usuarios_por_tipo = Usuario.objects.values('role').annotate(count=Count('id'))
     roles = ['Chofer', 'User']  # verifacar  eleonombres a los roles reales que tienes
     # Inicializar los conteos en 0
