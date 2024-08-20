@@ -188,10 +188,9 @@ def inicioMov(request):
         else:
             messages.error(request, 'Formulario inválido. Por favor, revisa los datos ingresados.')
     else:
-        form = MovimientosForm()
+        form = MovInicioForm()
 
     return render(request, 'movimientos/registrarInicio.html', {'form': form})
-
 ########## Registro Fin Movimiento ##########
 def finMov(request, mov_id):
     movimiento = get_object_or_404(Movimientos, mov_id=mov_id)
@@ -199,25 +198,31 @@ def finMov(request, mov_id):
     if request.method == 'POST':
         form = MovFinForm(request.POST)
         if form.is_valid():
-            try:
-                # Actualizar los campos relacionados con el fin del movimiento
-                movimiento.fin = form.cleaned_data['fin']
-                movimiento.kmFin = form.cleaned_data['kmFin']
-                movimiento.lugar_fin = form.cleaned_data['lugar_fin']
-                movimiento.permanencia = form.cleaned_data['permanencia']
-                movimiento.diasPermanencia = form.cleaned_data['diasPermanencia']
-                movimiento.cruce_frontera = form.cleaned_data['cruce_frontera']
-                movimiento.comentarios = form.cleaned_data['comentarios']
+            kmFin = form.cleaned_data['kmFin']
+            
+            # Verificar que kmFin sea mayor que kmInicio
+            if kmFin <= movimiento.kmInicio:
+                messages.error(request, 'El kilometraje final debe ser mayor que el kilometraje inicial.')
+            else:
+                try:
+                    # Actualizar los campos relacionados con el fin del movimiento
+                    movimiento.fin = form.cleaned_data['fin']
+                    movimiento.kmFin = kmFin
+                    movimiento.lugar_fin = form.cleaned_data['lugar_fin']
+                    movimiento.permanencia = form.cleaned_data['permanencia']
+                    movimiento.diasPermanencia = form.cleaned_data['diasPermanencia']
+                    movimiento.cruce_frontera = form.cleaned_data['cruce_frontera']
+                    movimiento.comentarios = form.cleaned_data['comentarios']
 
-                # Guardar los cambios
-                movimiento.save()
-                
-                messages.success(request, 'Fin del movimiento registrado exitosamente.')
-                return redirect('movchofer')
-            except Exception as e:
-                messages.error(request, f'Error al registrar el fin del movimiento: {str(e)}')
+                    # Guardar los cambios
+                    movimiento.save()
+                    
+                    messages.success(request, 'Fin del movimiento registrado exitosamente.')
+                    return redirect('movchofer')
+                except Exception as e:
+                    messages.error(request, f'Error al registrar el fin del movimiento: {str(e)}')
         else:
-            print(form.errors)  # ver los errores del formulario en la consola
+            print(form.errors)  # Ver los errores del formulario en la consola
             messages.error(request, 'Formulario inválido. Por favor, revisa los datos ingresados.')
     else:
         form = MovFinForm(initial={'movimiento_id': movimiento.mov_id})
