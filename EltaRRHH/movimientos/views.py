@@ -18,7 +18,6 @@ from django.db.models.functions import TruncMonth
 from django.utils.timezone import now
 
 
-
 @login_required
 def registrarmovimiento(request):
     if request.method == 'POST':
@@ -62,8 +61,8 @@ def registrarmovimiento(request):
         form = MovimientosForm()
 
     return render(request, 'movimientos/registrarmovimiento.html', {'form': form})
-
-### Solo registra elChofer ###
+###########################################################################
+############################## Solo registra el Chofer ##############################
 @login_required
 def registrarmovimientoc(request):
     if request.method == 'POST':
@@ -108,15 +107,144 @@ def registrarmovimientoc(request):
 
     return render(request, 'movimientos/registrarmovimientoc.html', {'form': form})
 
-############################ RRHH ############################
-########## Modificar Movimiento ##########
+###########################################################################
+##########################       Chofer      ##############################
+###########################################################################
 
+############################## Inicio Movimiento ##############################
+@login_required
+def inicioMov(request):
+    if request.method == 'POST':
+        form = MovInicioForm(request.POST)
+        if form.is_valid():
+            try:
+                usuario = request.user
+                # Verificar si el usuario es un chofer
+                try:
+                    chofer = Chofer.objects.get(usuario=usuario)
+                except Chofer.DoesNotExist:
+                    chofer = None
+
+                # Crear el movimiento 
+                Movimientos.objects.create(
+                    usuario_id=usuario,  # Usuario actual
+                    chofer=chofer,  # Puede ser None si el usuario no es un chofer
+                    nFlota=form.cleaned_data['nFlota'],
+                    inicio=form.cleaned_data['inicio'],
+                    kmInicio=form.cleaned_data['kmInicio'],
+                    tipo_kilometro=form.cleaned_data['tipo_kilometro'],
+                    lugar_inicio=form.cleaned_data['lugar_inicio'],
+                    lleva_carga=form.cleaned_data['lleva_carga'],
+                )
+                
+                messages.success(request, 'Movimiento registrado exitosamente.')
+                return redirect('movchofer')
+            except Exception as e:
+                messages.error(request, f'Error inesperado: {str(e)}')
+        else:
+            messages.error(request, 'Formulario inválido. Por favor, revisa los datos ingresados.')
+    else:
+        form = MovInicioForm()
+
+    return render(request, 'movimientos/registrarInicio.html', {'form': form})
+
+############################## FIN Movimiento ##############################
+def finMov(request, mov_id):
+    movimiento = get_object_or_404(Movimientos, mov_id=mov_id)
+
+    if request.method == 'POST':
+        form = MovFinForm(request.POST)
+        if form.is_valid():
+            kmFin = form.cleaned_data['kmFin']
+            
+            # Verificar que kmFin sea mayor que kmInicio
+            if kmFin <= movimiento.kmInicio:
+                messages.error(request, 'El kilometraje final debe ser mayor que el kilometraje inicial.')
+            else:
+                try:
+                    # Actualizar los campos relacionados con el fin del movimiento
+                    movimiento.fin = form.cleaned_data['fin']
+                    movimiento.kmFin = kmFin
+                    movimiento.lugar_fin = form.cleaned_data['lugar_fin']
+                    movimiento.permanencia = form.cleaned_data['permanencia']
+                    movimiento.diasPermanencia = form.cleaned_data['diasPermanencia']
+                    movimiento.cruce_frontera = form.cleaned_data['cruce_frontera']
+                    movimiento.comentarios = form.cleaned_data['comentarios']
+
+                    # Guardar los cambios
+                    movimiento.save()
+                    
+                    messages.success(request, 'Fin del movimiento registrado exitosamente.')
+                    return redirect('movchofer')
+                except Exception as e:
+                    messages.error(request, f'Error al registrar el fin del movimiento: {str(e)}')
+        else:
+            print(form.errors)  # Ver los errores del formulario en la consola
+            messages.error(request, 'Formulario inválido. Por favor, revisa los datos ingresados.')
+    else:
+        form = MovFinForm(initial={'movimiento_id': movimiento.mov_id})
+
+    return render(request, 'movimientos/registrarFin.html', {'form': form, 'movimiento': movimiento})
+
+############################## Modificar Movimiento Chofer  mes en Curso ##############################
+def modificarmovimiento(request, mov_id):
+    movimiento = get_object_or_404(Movimientos, pk=mov_id)  
+    # Obtén la fecha de fin del movimiento
+    fecha_fin = movimiento.fin
+    # Verifica si la fecha de fin está definida
+    if fecha_fin is not None:
+        # Obtén el mes y el año actuales
+        mes_actual = datetime.now().month
+        año_actual = datetime.now().year
+
+        # Verifica si el movimiento pertenece al mes y año actuales
+        if fecha_fin.month == mes_actual and fecha_fin.year == año_actual:
+            form = MovimientosForm(instance=movimiento)
+
+            if request.method == 'POST':
+                form = MovimientosForm(request.POST, instance=movimiento)
+                if form.is_valid():
+                    form.save()
+                    return redirect('movchofer')
+            
+            context = {
+                'form': form,
+                'movimiento': movimiento,
+            }
+            return render(request, 'movimientos/modificarmovimiento.html', context)
+        else:
+            # mensaje informando al usuario
+            messages.error(request, "Este movimiento no puede ser modificado porque no pertenece al mes en curso. Por favor, comuníquese con RRHH.")
+            return redirect('movchofer')  # O redirigir a una página apropiada
+    else:
+        # mensaje informando al usuario sobre la falta de fecha
+        messages.error(request, "No se puede modificar el movimiento porque no tiene una fecha de fin válida. Por favor, Cierre el Movimiento.")
+        return redirect('movchofer')  
+    
+############################## Borrar Movimiento Chofer ##############################
+@login_required
+def borrarmovimiento(request):
+    if request.method == 'POST':
+        movimiento_id = request.POST.get('id')
+        try:
+            movimiento = get_object_or_404(Movimientos, mov_id=movimiento_id)
+            movimiento.delete()
+            return JsonResponse({'success': True})
+        except Movimientos.DoesNotExist:
+            return JsonResponse({'success': False})
+    return JsonResponse({'success': False})
+
+###########################################################################
+##########################        RRHH       ##############################
+###########################################################################
+
+############################## Modificar Movimiento ##############################
 @login_required
 def modimovR(request, mov_id):
     # Obtener el movimiento por su ID o devolver un 404 si no existe
     movimiento = get_object_or_404(Movimientos, pk=mov_id)
     
-    # Obtener la fecha de fin del movimiento
+    # Obtiene la fecha de fin del movimiento
     fecha_fin = movimiento.fin
     
     # Verificar si la fecha de fin está definida
@@ -130,18 +258,17 @@ def modimovR(request, mov_id):
                 form.save()
                 messages.success(request, "El movimiento se ha modificado correctamente.")
                 return redirect('listmovimiento')
-        # Preparar el contexto para la plantilla
         context = {
             'form': form,
             'movimiento': movimiento,
         }
         return render(request, 'movimientos/modimovR.html', context)
     else:
-        # Informar al usuario que el movimiento no tiene una fecha de fin válida
+        # Informa al usuario que el movimiento no tiene una fecha de fin válida
         messages.error(request, "No se puede modificar el movimiento porque no tiene una fecha de fin válida. Por favor, cierre el movimiento.")
         return redirect('listmovimiento')
 
-########## borrar Movimiento ##########
+############################## borrar Movimiento ##############################
 @login_required
 def borrarmovimientoR(request):
     if request.method == 'POST':
@@ -154,8 +281,9 @@ def borrarmovimientoR(request):
             return JsonResponse({'success': False})
     return JsonResponse({'success': False})
 
-############################ Chofer ############################
-########## Inicio Movimiento ##########
+###########################################################################
+########################## Inicio Movimiento ##############################
+
 @login_required
 def inicioMov(request):
     if request.method == 'POST':
@@ -191,7 +319,8 @@ def inicioMov(request):
         form = MovInicioForm()
 
     return render(request, 'movimientos/registrarInicio.html', {'form': form})
-########## Registro Fin Movimiento ##########
+
+############################## Registro Fin Movimiento ##############################
 def finMov(request, mov_id):
     movimiento = get_object_or_404(Movimientos, mov_id=mov_id)
 

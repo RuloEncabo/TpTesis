@@ -37,29 +37,41 @@
                                 <table id="movimientos-table" class="table table-striped table-hover table-sm">
                                     <thead>
                                         <tr>
-                                            <th>Inicio</th>
-                                            <th>Lugar Inicio</th>
-                                            <th>Fin</th>
-                                            <th>Lugar Fin</th>
-                                            <th>Tipo Km</th>
-                                            <th>Km Tramo</th>
-                                            <th>Acciones</th> <!-- Columna para acciones -->
+                                            <th class="text-center">Inicio</th>
+                                            <th class="text-center">Lugar Inicio</th>
+                                            <th class="text-center">Fin</th>
+                                            <th class="text-center">Lugar Fin</th>
+                                            <th class="text-center">Tipo Km</th>
+                                            <th class="text-center">Km Tramo</th>
+                                            <th class="text-center">Editar</th> <!-- Columna para acciones -->
+                                            <th class="text-center">Borrar</th> <!-- Columna para acciones -->
+                                            <th class="text-center">Cerrar</th> <!-- Columna para acciones -->
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for movimiento in movimientos %}
                                         <tr>
-                                            <td>{{ movimiento.inicio|date:"d-m-y H:i" }}</td>
-                                            <td>{{ movimiento.lugar_inicio }}</td>
-                                            <td>{{ movimiento.fin|date:"d-m-y H:i"}}</td>
-                                            <td>{{ movimiento.lugar_fin }}</td>
-                                            <td>{{ movimiento.tipo_kilometro }}</td>
-                                            <td>{{ movimiento.diferencia_km }}</td>
-                                            <td>
-                                                <a href="{% url 'modificarmovimiento' mov_id=movimiento.mov_id %}" class="btn btn-primary btn-sm">Modificar</a>
-                                                <button class="btn btn-danger btn-borrar" data-id="{{ movimiento.mov_id }}">Eliminar</button>
+                                            <td class="text-center">{{ movimiento.inicio|date:"d-m-y H:i" }}</td>
+                                            <td class="text-center">{{ movimiento.lugar_inicio }}</td>
+                                            <td class="text-center">{{ movimiento.fin|date:"d-m-y H:i"}}</td>
+                                            <td class="text-center">{{ movimiento.lugar_fin }}</td>
+                                            <td class="text-center">{{ movimiento.tipo_kilometro }}</td>
+                                            <td class="text-center">{{ movimiento.diferencia_km }}</td>
+                                            <td class="text-center">
+                                                <a href="{% url 'modificarmovimiento' mov_id=movimiento.mov_id %}" class="btn btn-warning btn-sm">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-center">
+                                                <button class="btn btn-danger btn-sm btn-borrar" data-id="{{ movimiento.mov_id }}">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">
                                                 {% if not movimiento.fin %} <!-- solo muestra el boton "Cerrar" solo si no se ha registrado el fin -->
-                                                    <a href="{% url 'finMov' movimiento.mov_id %}" class="btn btn-success btn-sm">Cerrar </a>
+                                                <a href="{% url 'finMov' movimiento.mov_id %}" class="btn btn-success btn-sm">
+                                                    <i class="fa fa-check-square-o"></i>
+                                                </a>
                                                 {% endif %}
                                             </td>
                                         </tr>
