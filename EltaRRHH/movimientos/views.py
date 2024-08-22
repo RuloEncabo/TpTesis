@@ -297,7 +297,7 @@ def inicioMov(request):
                 except Chofer.DoesNotExist:
                     chofer = None
 
-                # Crear el movimiento con los campos requeridos
+                # Crea el movimiento con los campos requeridos
                 Movimientos.objects.create(
                     usuario_id=usuario,  # Usuario actual
                     chofer=chofer,  # Puede ser None si el usuario no es un chofer
@@ -329,12 +329,12 @@ def finMov(request, mov_id):
         if form.is_valid():
             kmFin = form.cleaned_data['kmFin']
             
-            # Verificar que kmFin sea mayor que kmInicio
+            # Verifica que kmFin sea mayor que kmInicio
             if kmFin <= movimiento.kmInicio:
                 messages.error(request, 'El kilometraje final debe ser mayor que el kilometraje inicial.')
             else:
                 try:
-                    # Actualizar los campos relacionados con el fin del movimiento
+                    # Actualiza los campos relacionados con el fin del movimiento
                     movimiento.fin = form.cleaned_data['fin']
                     movimiento.kmFin = kmFin
                     movimiento.lugar_fin = form.cleaned_data['lugar_fin']
@@ -343,7 +343,7 @@ def finMov(request, mov_id):
                     movimiento.cruce_frontera = form.cleaned_data['cruce_frontera']
                     movimiento.comentarios = form.cleaned_data['comentarios']
 
-                    # Guardar los cambios
+                    # Guarda los cambios
                     movimiento.save()
                     
                     messages.success(request, 'Fin del movimiento registrado exitosamente.')
@@ -362,11 +362,11 @@ def finMov(request, mov_id):
 ####### Modificar Movimiento Chofer  mes en Curso #######
 def modificarmovimiento(request, mov_id):
     movimiento = get_object_or_404(Movimientos, pk=mov_id)  
-    # Obtén la fecha de fin del movimiento
+    # se obtiene la fecha de fin del movimiento
     fecha_fin = movimiento.fin
     # Verifica si la fecha de fin está definida
     if fecha_fin is not None:
-        # Obtén el mes y el año actuales
+        # se obtiene el mes y el año actuales
         mes_actual = datetime.now().month
         año_actual = datetime.now().year
 
@@ -433,7 +433,7 @@ def listmovimientoChofer(request):
         movimientos = Movimientos.objects.filter(chofer=chofer)
     except Chofer.DoesNotExist:
         movimientos = Movimientos.objects.none()
-        # O podrías redirigir a una página de error si prefieres
+       
 
     # Calcular la diferencia entre kmInicio y kmFin para cada movimiento
     for movimiento in movimientos:
@@ -606,7 +606,7 @@ def kpi(request):
 
 # <------------ Contar usuarios por rol ------------>
     usuarios_por_tipo = Usuario.objects.values('role').annotate(count=Count('id'))
-    roles = ['Chofer', 'User']  # verifacar  eleonombres a los roles reales que tienes
+    roles = ['chofer', 'admin']  # verifacar  eleonombres a los roles reales que tienes
     # Inicializar los conteos en 0
     conteos = {rol: 0 for rol in roles}
     # Contar usuarios por rol
@@ -644,7 +644,7 @@ def kpi(request):
 
     # Filtrar los registros con vencimientos mayores a hoy y menores a 30 días
     vencimientos = Chofer.objects.filter(
-        Q(ingresoFCA_venc__gt=hoy, ingresoFCA_venc__lte=fecha_limite) |
+        Q(ingresoFCA_venc__gt=hoy, ingresoFCA_venc__lte=fecha_limite) |  # Es una función que permite construir consultas complejas y combinarlas usando operadores lógicos en este caso OR
         Q(licencia_venc__gt=hoy, licencia_venc__lte=fecha_limite) |
         Q(psicofisico_venc__gt=hoy, psicofisico_venc__lte=fecha_limite) |
         Q(curso_venc__gt=hoy, curso_venc__lte=fecha_limite)
