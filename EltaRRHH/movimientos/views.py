@@ -498,11 +498,15 @@ def movimiento(request):
     # Total de registros realizados por chofer
     registros_por_chofer = Movimientos.objects.values('chofer').annotate(total_registros=Count('mov_id')).order_by('-total_registros')
     
+    # Total de kilómetros por tipo
+    km_por_tipo = Movimientos.objects.values('tipo_kilometro__descripcion').annotate(total_km=Sum(F('kmFin') - F('kmInicio'))).order_by('-total_km')
+    
     context = {
         'total_km': total_km,
-        'total_choferes':total_choferes,
+        'total_choferes': total_choferes,
         'registros_por_chofer': registros_por_chofer,
         'total_movimientos': total_movimientos,
+        'km_por_tipo': km_por_tipo,
     }
     return render(request, 'movimientos/movimiento.html', context)
 
