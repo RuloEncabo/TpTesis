@@ -9,7 +9,7 @@ from .models import Chofer
 def listchofer(request):
     choferes = Chofer.objects.all()
     
-    # Calcular días restantes para cada fecha de vencimiento
+    # Calcula días restantes para cada fecha de vencimiento
     for chofer in choferes:
         chofer.dias_ingresoFCA_venc = (chofer.ingresoFCA_venc - date.today()).days
         chofer.dias_licencia_venc = (chofer.licencia_venc - date.today()).days
@@ -55,8 +55,6 @@ def modidoc(request, chofer_id):
 
     return render(request, 'chofer/modidoc.html', {'form': form, 'chofer': chofer})
 
-
-
 ###  Funcion para modificar los Chofer ###
 def editarchofer(request, chofer_id):
     chofer = get_object_or_404(Chofer, Id_chofer=chofer_id)
@@ -74,7 +72,6 @@ def editarchofer(request, chofer_id):
         form = ChoferForm(instance=chofer)
 
     return render(request, 'chofer/editarchofer.html', {'form': form, 'chofer': chofer})
-
 
 ###  Funcion para modificar un chofer ###
 def editarchoferr(request, chofer_id):

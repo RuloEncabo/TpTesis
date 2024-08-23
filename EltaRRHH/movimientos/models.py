@@ -17,7 +17,7 @@ class TipoKilometros(models.Model):
 
 class Movimientos(models.Model):
     mov_id = models.AutoField(primary_key=True)
-    usuario_id = models.ForeignKey(Usuario, on_delete=models.CASCADE)  # Asegúrate de que esta línea esté activa
+    usuario_id = models.ForeignKey(Usuario, on_delete=models.CASCADE)  
     chofer = models.ForeignKey(Chofer, on_delete=models.SET_NULL, null=True, blank=True)
     nFlota = models.CharField(max_length=60, null=True, blank=True)
     inicio = models.DateTimeField()

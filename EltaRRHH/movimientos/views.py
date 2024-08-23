@@ -26,13 +26,13 @@ def registrarmovimiento(request):
             try:
                 usuario = request.user
 
-                # Verificar si el usuario es un chofer
+                # Verifica si el usuario es un chofer
                 try:
                     chofer = Chofer.objects.get(usuario=usuario)
                 except Chofer.DoesNotExist:
                     chofer = None
 
-                # Crear el movimiento
+                # Crea el movimiento
                 Movimientos.objects.create(
                     usuario_id=usuario,  # Usuario actual
                     chofer=chofer,  # Puede ser None si el usuario no es un chofer
@@ -71,13 +71,13 @@ def registrarmovimientoc(request):
             try:
                 usuario = request.user
 
-                # Verificar si el usuario es un chofer
+                # Verifica si el usuario es un chofer
                 try:
                     chofer = Chofer.objects.get(usuario=usuario)
                 except Chofer.DoesNotExist:
                     chofer = None
 
-                # Crear el movimiento
+                # Crea el movimiento
                 Movimientos.objects.create(
                     usuario_id=usuario,  # Usuario actual
                     chofer=chofer,  # Puede ser None si el usuario no es un chofer
@@ -119,7 +119,7 @@ def inicioMov(request):
         if form.is_valid():
             try:
                 usuario = request.user
-                # Verificar si el usuario es un chofer
+                # Verifica si el usuario es un chofer
                 try:
                     chofer = Chofer.objects.get(usuario=usuario)
                 except Chofer.DoesNotExist:
