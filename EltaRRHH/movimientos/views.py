@@ -125,7 +125,7 @@ def inicioMov(request):
                 except Chofer.DoesNotExist:
                     chofer = None
 
-                # Crear el movimiento 
+                # Crea el movimiento 
                 Movimientos.objects.create(
                     usuario_id=usuario,  # Usuario actual
                     chofer=chofer,  # Puede ser None si el usuario no es un chofer
@@ -157,12 +157,12 @@ def finMov(request, mov_id):
         if form.is_valid():
             kmFin = form.cleaned_data['kmFin']
             
-            # Verificar que kmFin sea mayor que kmInicio
+            # comprueba que kmFin sea mayor que kmInicio
             if kmFin <= movimiento.kmInicio:
                 messages.error(request, 'El kilometraje final debe ser mayor que el kilometraje inicial.')
             else:
                 try:
-                    # Actualizar los campos relacionados con el fin del movimiento
+                    # Actualiza los campos relacionados con el fin del movimiento
                     movimiento.fin = form.cleaned_data['fin']
                     movimiento.kmFin = kmFin
                     movimiento.lugar_fin = form.cleaned_data['lugar_fin']
@@ -171,7 +171,7 @@ def finMov(request, mov_id):
                     movimiento.cruce_frontera = form.cleaned_data['cruce_frontera']
                     movimiento.comentarios = form.cleaned_data['comentarios']
 
-                    # Guardar los cambios
+                    # Guarda los cambios
                     movimiento.save()
                     
                     messages.success(request, 'Fin del movimiento registrado exitosamente.')
@@ -189,11 +189,11 @@ def finMov(request, mov_id):
 ############################## Modificar Movimiento Chofer  mes en Curso ##############################
 def modificarmovimiento(request, mov_id):
     movimiento = get_object_or_404(Movimientos, pk=mov_id)  
-    # Obtén la fecha de fin del movimiento
+    # fecha de fin del movimiento
     fecha_fin = movimiento.fin
     # Verifica si la fecha de fin está definida
     if fecha_fin is not None:
-        # Obtén el mes y el año actuales
+        # obtine el mes y el año actuales
         mes_actual = datetime.now().month
         año_actual = datetime.now().year
 
@@ -213,11 +213,11 @@ def modificarmovimiento(request, mov_id):
             }
             return render(request, 'movimientos/modificarmovimiento.html', context)
         else:
-            # mensaje informando al usuario
+            # aviso al usuario
             messages.error(request, "Este movimiento no puede ser modificado porque no pertenece al mes en curso. Por favor, comuníquese con RRHH.")
-            return redirect('movchofer')  # O redirigir a una página apropiada
+            return redirect('movchofer')  
     else:
-        # mensaje informando al usuario sobre la falta de fecha
+        # aviso al usuario sobre la falta de fecha
         messages.error(request, "No se puede modificar el movimiento porque no tiene una fecha de fin válida. Por favor, Cierre el Movimiento.")
         return redirect('movchofer')  
     
@@ -241,15 +241,15 @@ def borrarmovimiento(request):
 ############################## Modificar Movimiento ##############################
 @login_required
 def modimovR(request, mov_id):
-    # Obtener el movimiento por su ID o devolver un 404 si no existe
+    # se obtiene el movimiento por su ID o devuelve un 404 si no existe
     movimiento = get_object_or_404(Movimientos, pk=mov_id)
     
     # Obtiene la fecha de fin del movimiento
     fecha_fin = movimiento.fin
     
-    # Verificar si la fecha de fin está definida
+    # Verifica si la fecha de fin está definida
     if fecha_fin is not None:
-        # Instanciar el formulario con el movimiento actual
+        # Instancia el formulario con el movimiento actual
         form = MovimientosForm(instance=movimiento)
 
         if request.method == 'POST':
@@ -378,7 +378,6 @@ def modificarmovimiento(request, mov_id):
                 form = MovimientosForm(request.POST, instance=movimiento)
                 if form.is_valid():
                     form.save()
-                    # Redirigir a otra página o mostrar un mensaje
                     return redirect('movchofer')
             
             context = {
@@ -387,13 +386,13 @@ def modificarmovimiento(request, mov_id):
             }
             return render(request, 'movimientos/modificarmovimiento.html', context)
         else:
-            # Agregar un mensaje informando al usuario
+            # envia mensaje informando al usuario
             messages.error(request, "Este movimiento no puede ser modificado porque no pertenece al mes en curso. Por favor, comuníquese con RRHH.")
-            return redirect('movchofer')  # O redirigir a una página apropiada
+            return redirect('movchofer')  
     else:
-        # Agregar un mensaje informando al usuario sobre la falta de fecha
+        # envia mensaje informando al usuario sobre la falta de fecha
         messages.error(request, "No se puede modificar el movimiento porque no tiene una fecha de fin válida. Por favor, Cierre el Movimiento.")
-        return redirect('movchofer')  # O redirigir a una página apropiada
+        return redirect('movchofer')  
     
 ####### Borrar Movimiento Chofer #######
 @login_required
@@ -414,7 +413,7 @@ def borrarmovimiento(request):
 
 ####### Lista los campos del Chofer #######
 def listmovimiento(request):
-    # Obtener todos los movimientos y calcular la diferencia entre kmInicio y kmFin, mostrando 0 si es negativa
+    # Obtien todos los movimientos y calcula la diferencia entre kmInicio y kmFin, mostrando 0 si es negativa
     movimientos = Movimientos.objects.annotate(
         km_difference=Greatest(Coalesce(F('kmFin'), Value(0)) - F('kmInicio'), Value(0))
     )
@@ -435,7 +434,7 @@ def listmovimientoChofer(request):
         movimientos = Movimientos.objects.none()
        
 
-    # Calcular la diferencia entre kmInicio y kmFin para cada movimiento
+    # Calcula la diferencia entre kmInicio y kmFin para cada movimiento
     for movimiento in movimientos:
         movimiento.km_difference = (movimiento.kmFin or 0) - movimiento.kmInicio
 
@@ -446,7 +445,7 @@ def listmovimientoChofer(request):
 
 ####### Muestra Resumen Choferes en sesion #######
 def movchofer(request):
-    # Obtener el chofer asociado al usuario autenticado
+    # Obtiene el chofer asociado al usuario autenticado
     chofer = request.user.chofer
 
     # Fecha de inicio y fin del mes actual
@@ -455,13 +454,17 @@ def movchofer(request):
     end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
 
     # Total de kilómetros realizados por el chofer
-    total_km = Movimientos.objects.filter(chofer=chofer).aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km']
+    total_km = Movimientos.objects.filter(chofer=chofer).aggregate(
+        total_km=Sum(F('kmFin') - F('kmInicio'))
+    )['total_km'] or 0
     
     # Total de movimientos realizados por el chofer
     total_movimientos = Movimientos.objects.filter(chofer=chofer).count()
 
     # Total de registros realizados por el chofer
-    registros_por_chofer = Movimientos.objects.filter(chofer=chofer).values('chofer').annotate(total_registros=Count('mov_id')).order_by('-total_registros')
+    registros_por_chofer = Movimientos.objects.filter(chofer=chofer).values('chofer').annotate(
+        total_registros=Count('mov_id')
+    ).order_by('-total_registros')
     
     # Kilómetros realizados por tipo de kilómetro y por mes
     km_por_tipo = Movimientos.objects.filter(
@@ -471,16 +474,26 @@ def movchofer(request):
         total_km=Sum(F('kmFin') - F('kmInicio'))
     ).order_by('tipo_kilometro__descripcion')
 
-    # Dividir los kilómetros por tipo en normales y 100%
-    km_normales = km_por_tipo.filter(tipo_kilometro__descripcion='Normal').aggregate(total_km=Sum('total_km'))['total_km']
-    km_100 = km_por_tipo.filter(tipo_kilometro__descripcion='100%').aggregate(total_km=Sum('total_km'))['total_km']
+    # Cálculo directo de kilómetros normales y 100%
+    km_normales = Movimientos.objects.filter(
+        chofer=chofer,
+        fin__range=[start_of_month, end_of_month],
+        tipo_kilometro__descripcion='Normal'
+    ).aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km'] or 0
 
+    km_100 = Movimientos.objects.filter(
+        chofer=chofer,
+        fin__range=[start_of_month, end_of_month],
+        tipo_kilometro__descripcion='100%'
+    ).aggregate(total_km=Sum(F('kmFin') - F('kmInicio')))['total_km'] or 0
+    
     context = {
         'total_km': total_km,
         'registros_por_chofer': registros_por_chofer,
         'total_movimientos': total_movimientos,
         'km_normales': km_normales,
         'km_100': km_100,
+        'km_por_tipo': km_por_tipo,  # Añadir esto si deseas mostrar km_por_tipo en la plantilla
     }
     return render(request, 'movimientos/movchofer.html', context)
 

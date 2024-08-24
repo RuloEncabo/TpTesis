@@ -14,10 +14,8 @@
 <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}">
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
 <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
-
 <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
 
@@ -40,60 +38,62 @@
                     <div class="card-body">
                         
                         <div class="row mt-4">
-
-                            <!-- Card 1 -->
-                            <div class="col-md-3">
-                                <div class="card border border-secondary text-center">
-                                    <div class="card-header">
-                                        <div class="text-muted text-right mb-1">
-                                            <i class="fa fa-user-plus"></i>
+                            <!-- Centrando las dos primeras tarjetas en la fila superior -->
+                            <div class="col-12 d-flex justify-content-center">
+                                <!-- Card 1 -->
+                                <div class="col-md-3 mx-2">
+                                    <div class="card border border-secondary text-center">
+                                        <div class="card-header">
+                                            <div class="text-muted text-right mb-1">
+                                                <i class="fa fa-user-plus"></i>
+                                            </div>
+                                            <strong class="card-title text-primary">Km Totales</strong>
                                         </div>
-                                        <strong class="card-title text-primary" > Km Totales </strong>
-                                    </div>
-                                    <div class="card-body">                                        
-                                        <h4> <span class="count"> {{ total_km|default:0|floatformat:2 }} </span></h4>
-                                        <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
+                                        <div class="card-body">                                        
+                                            <h4><span class="count">{{ total_km|default:0|floatformat:2 }}</span></h4>
+                                            <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-
-                            <!-- Card 2 -->
-                            <div class="col-md-3">
-                                <div class="card border border-secondary text-center">
-                                    <div class="card-header">
-                                        <div class="text-muted text-right mb-1">
-                                            <i class="fa fa-user-plus"></i>
+                                <!-- Card 2 -->
+                                <div class="col-md-3 mx-2">
+                                    <div class="card border border-secondary text-center">
+                                        <div class="card-header">
+                                            <div class="text-muted text-right mb-1">
+                                                <i class="fa fa-user-plus"></i>
+                                            </div>
+                                            <strong class="card-title text-primary">Movimientos</strong>
                                         </div>
-                                        <strong class="card-title text-primary" > Tipo Km </strong>
-                                    </div>
-                                    <div class="card-body">
-                                        
-                                        <h4> <span class="count"> {{ km_normales }} </span></h4>
-                                        <h4> <span class="count"> {{ km_100 }} </span></h4>
-                                        <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
+                                        <div class="card-body">
+                                            <h4><span class="count">{{ total_movimientos }}</span></h4>
+                                            <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Card 3 -->
-                            <div class="col-md-3">
-                                <div class="card border border-secondary text-center">
-                                    <div class="card-header">
-                                        <div class="text-muted text-right mb-1">
-                                            <i class="fa fa-user-plus"></i>
+                            <!-- Nueva fila para la tercera tarjeta, centrada horizontalmente -->
+                            <div class="col-12 d-flex justify-content-center mt-4">
+                                <!-- Card 3 -->
+                                <div class="col-md-6">
+                                    <div class="card border border-secondary text-center">
+                                        <div class="card-header">
+                                            <div class="text-muted text-right mb-1">
+                                                <i class="fa fa-user-plus"></i>
+                                            </div>
+                                            <strong class="card-title text-primary">Tipo de Km</strong>
                                         </div>
-                                        <strong class="card-title text-primary" > movimientos</strong>
-                                    </div>
-                                    <div class="card-body">
-                                        
-                                        <h4> <span class="count">{{ total_movimientos }} </span></h4>
-                                        <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
+                                        <div class="card-body">
+                                            <!-- Aquí podrías iterar sobre km_por_tipo si deseas mostrar otros tipos dinámicamente -->
+                                            {% for km in km_por_tipo %}
+                                                <h4>{{ km.tipo_kilometro__descripcion }}: <span class="count">{{ km.total_km }}</span> km</h4>
+                                            {% endfor %}
+                                            <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Card 3 -->
-                    
                         </div> <!-- row.// -->
                     </div> <!-- card-body .// -->
                 </article> <!-- card.// --> 
@@ -101,8 +101,8 @@
         </div> <!-- row.// -->
     </div> <!-- container-fluid.// -->
 </section>
-    <!-- ========================= SECTION CONTENT END// ========================= -->
-    {% endblock %}
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}
 {% include 'includes/footer.html' %}
 
 <!-- Scripts -->
