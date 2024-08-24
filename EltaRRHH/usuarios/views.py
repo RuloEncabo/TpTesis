@@ -14,7 +14,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
-
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
 
 @login_required(login_url='login')
 def home(request):
@@ -105,6 +106,23 @@ def registro(request):
         form = RegistroForm()
     
     return render(request, 'usuarios/registro.html', {'form': form})
+
+class CustomPasswordResetView(auth_views.PasswordResetView):
+    template_name = 'usuarios/password_reset_form.html'
+    email_template_name = 'usuarios/password_reset_email.html'
+    subject_template_name = 'usuarios/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+
+class CustomPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'usuarios/password_reset_done.html'
+
+class CustomPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'usuarios/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+class CustomPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'usuarios/password_reset_complete.html'
+
 
 
 ### Funcion para Login ###

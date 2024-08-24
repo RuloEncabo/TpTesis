@@ -48,7 +48,7 @@
                         </div> <!-- form-password// -->
 
                         <div class="form-group text-right">
-                            <a href="#" class="text-muted">¿Olvidaste tu password?</a>
+                            <a href="{% url 'password_reset' %}" class="text-muted">¿Olvidaste tu password?</a>
                         </div> <!-- form-group// -->
 
                         <div class="form-group">
@@ -58,7 +58,6 @@
                 </div> <!-- card-body.// -->
             </div> <!-- card.// -->
 
-            <p class="text-center mt-4">¿No tienes una cuenta? <a href="#">Solicitar a RRHH</a></p>
             <br><br>
             <!-- ============================ COMPONENT LOGIN END.// ================================= -->
         {% endif %}
