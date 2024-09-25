@@ -72,3 +72,4 @@ class MovFinForm(forms.ModelForm):
             'cruce_frontera': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'comentarios': forms.Textarea(attrs={'class': 'form-control'}),
         }
+        
